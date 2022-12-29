@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "adminddsg",
+    "database": "wd-voting-dev",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "adminddsg",
+    "database": "wd-voting-test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "adminddsg",
+    "database": "wd-voting-prod",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
