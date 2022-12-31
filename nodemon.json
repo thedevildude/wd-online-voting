@@ -1,5 +1,5 @@
 {
   "events": {
-      "start": "npm run build:css"
-    }
- }
+    "start": "npm run build:css"
+  }
+}
