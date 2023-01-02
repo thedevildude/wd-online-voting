@@ -1,12 +1,23 @@
 const router = require("express").Router();
+const homeRouter = require("express").Router({ mergeParams: true });
 // eslint-disable-next-line no-unused-vars
 const { Admin, Election } = require("../models");
+
+router.use("/home", homeRouter);
 
 router.get("/", (request, response) => {
   response.render("index");
 });
 
-router.get("/addElection", (request, response) => {
+homeRouter.get("/", async (request, response) => {
+  const election = await Election.findAllElections({ adminId: 2 });
+  response.render("home", {
+    title: "Home",
+    election: election,
+  });
+});
+
+homeRouter.get("/new", (request, response) => {
   response.render("addElection", {
     csrfToken: request.csrfToken(),
     title: "Create a new election",
@@ -40,4 +51,4 @@ router.post("/addElection", async (request, response) => {
   }
 });
 
-module.exports = router;
+(module.exports = router), homeRouter;

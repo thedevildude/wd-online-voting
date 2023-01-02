@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/styles.css">
+  <title><%=title%></title>
+</head>
+<body>
+  <%- include("header", {text: "Welcome User"})%>
+  <div class="flex items-center justify-between rounded-3xl bg-gray-200 m-5 p-5">
+    <p class="text-2xl">You have created <%=election.length%> Elections</p>
+    <a href="/home/new" class="text-2xl text-white bg-green-600 rounded-xl p-2">Create Election</a>
+  </div>
+  <p class="text-2xl ml-5">Your Elections</p>
+  <div class="flex flex-col bg-gray-200 m-5">
+    <% for(let i = 0; i< election.length; i++) {%>
+      <p class="p-5 border-b-2 border-gray-300"><%=election[i].name%></p>
+      <%}%>
+  </div>
+</body>
+</html>

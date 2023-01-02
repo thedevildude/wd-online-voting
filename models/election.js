@@ -15,10 +15,26 @@ module.exports = (sequelize, DataTypes) => {
         electionStatus: false,
       });
     }
+
+    static async findAllElections({ adminId }) {
+      return await this.findAll({
+        where: {
+          adminId,
+        },
+      });
+    }
   }
   Election.init(
     {
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          len: {
+            args: 3,
+            msg: "Election name should be atleast 3 characters long",
+          },
+        },
+      },
       adminId: DataTypes.INTEGER,
     },
     {
