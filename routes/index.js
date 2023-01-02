@@ -6,6 +6,10 @@ router.get("/", (request, response) => {
   response.render("index");
 });
 
+router.get("/addElection", (request, response) => {
+  response.render("addElection");
+});
+
 router.post("/admin", async (request, response) => {
   try {
     const admin = await Admin.addAdmin({
@@ -25,7 +29,7 @@ router.post("/addElection", async (request, response) => {
   try {
     const election = await Election.addElection({
       name: request.body.name,
-      adminId: request.body.adminId,
+      adminId: 2,
     });
     return response.json(election);
   } catch (error) {
