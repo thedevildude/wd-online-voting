@@ -7,7 +7,10 @@ router.get("/", (request, response) => {
 });
 
 router.get("/addElection", (request, response) => {
-  response.render("addElection");
+  response.render("addElection", {
+    csrfToken: request.csrfToken(),
+    title: "Create a new election",
+  });
 });
 
 router.post("/admin", async (request, response) => {
