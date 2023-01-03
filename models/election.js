@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes) => {
     static async findElection({ electionId }) {
       return await this.findByPk(electionId);
     }
+
+    static async closeElection({ electionId }) {
+      return await this.update(true, {
+        where: {
+          id: electionId,
+        },
+      });
+    }
   }
   Election.init(
     {
@@ -43,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       adminId: DataTypes.INTEGER,
+      electionStatus: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
