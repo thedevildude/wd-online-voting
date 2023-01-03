@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async findElection({ electionId }) {
+      return await this.findByPk(electionId);
+    }
   }
   Election.init(
     {

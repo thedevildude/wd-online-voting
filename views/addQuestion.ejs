@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>
+    <%=title%>
+  </title>
+</head>
+
+<body>
+  <%- include("header", {text: "Add new question" })%>
+  <p class="text-center my-2">Adding question for <%=election.name%></p>
+  <form class="flex flex-col m-5" action="../addquestion" method="post">
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+    <input type="hidden" name="electionId" value="<%=election.id%>">
+    <label class="text-xl text-gray-800 my-2" for="name">What's your question?*</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="Question...." type="text"
+      name="name">
+    <label class="text-xl text-gray-800 my-2" for="description">Describe your question</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-xl" placeholder="Description...." type="text"
+      name="description">
+    <button class="text-white bg-green-600 rounded-xl p-2 my-2" type="submit">Add</button>
+  </form>
+</body>
+</html>
