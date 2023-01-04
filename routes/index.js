@@ -40,10 +40,10 @@ homeRouter.get("/", async (request, response) => {
     adminId: request.user.id,
   });
   response.render("home", {
-    csrfToken: request.csrfToken(),
     title: "Home",
     election: election,
     user: request.user.firstName,
+    csrfToken: request.csrfToken(),
   });
 });
 
@@ -130,12 +130,8 @@ homeRouter.delete("/election/:id/delete", async (request, response) => {
       adminId: request.user.id,
     });
     return response.json({ success: true });
-    /* request.flash("error", "Election deleted sucessfully");
-    response.redirect("/home"); */
   } catch (error) {
     return response.status(422).json(error);
-    /* request.flash("error", "Could not be deleted");
-    response.redirect("/home") */
   }
 });
 

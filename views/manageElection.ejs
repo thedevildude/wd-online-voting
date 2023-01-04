@@ -22,7 +22,7 @@
       })
         .then((res) => {
           if (res.ok) {
-            window.location.reload();
+            window.open("/home", "_self")
           }
         })
         .catch((err) => console.error(err));
