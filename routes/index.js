@@ -9,6 +9,20 @@ router.get("/", (request, response) => {
   response.render("index");
 });
 
+router.get("/signup", (request, response) => {
+  response.render("signup", {
+    csrfToken: request.csrfToken(),
+    title: "Sign Up",
+  });
+});
+
+router.get("/login", (request, response) => {
+  response.render("login", {
+    csrfToken: request.csrfToken(),
+    title: "Login",
+  });
+});
+
 homeRouter.get("/", async (request, response) => {
   const election = await Election.findAllElections({ adminId: 2 });
   response.render("home", {

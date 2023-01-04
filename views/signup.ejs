@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>
+    <%=title%>
+  </title>
+</head>
+
+<body>
+  <%- include("header", {text: "Signup as a new user" })%>
+  <form class="flex flex-col m-5" action="" method="post">
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+    <label class="text-xl text-gray-800 my-2" for="firstName">First Name</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="John" type="text"
+      name="name" required>
+    <label class="text-xl text-gray-800 my-2" for="lastName">Last Name</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="Doe" type="text"
+      name="lastName">
+    <label class="text-xl text-gray-800 my-2" for="email">Email</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="john.doe@email.com" type="email"
+      name="email">
+    <label class="text-xl text-gray-800 my-2" for="password">Password</label>
+    <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="*******" type="password"
+      name="password">
+    <button class="text-2xl text-white bg-green-600 rounded-xl p-2 text-center" type="submit">Sign Up</button>
+  </form>
+</body>
+</html>
