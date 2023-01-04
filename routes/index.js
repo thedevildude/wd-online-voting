@@ -40,6 +40,7 @@ homeRouter.get("/", async (request, response) => {
     adminId: request.user.id,
   });
   response.render("home", {
+    csrfToken: request.csrfToken(),
     title: "Home",
     election: election,
     user: request.user.firstName,
@@ -76,6 +77,7 @@ homeRouter.get("/election/:id", async (request, response) => {
 homeRouter.get("/election/:id/question/new", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
+    adminId: request.user.id,
   });
   return response.render("addQuestion", {
     title: "Add New Question",
@@ -118,6 +120,23 @@ homeRouter.post("/election/:id/question/new", async (request, response) => {
   });
   console.log("Question created with id:", question.id);
   return response.redirect(`/home/election/${request.params.id}/question`);
+});
+
+homeRouter.delete("/election/:id/delete", async (request, response) => {
+  try {
+    console.log("Deleting a election by id: ", request.params.id);
+    await Election.deleteElection({
+      electionId: parseInt(request.params.id),
+      adminId: request.user.id,
+    });
+    return response.json({ success: true });
+    /* request.flash("error", "Election deleted sucessfully");
+    response.redirect("/home"); */
+  } catch (error) {
+    return response.status(422).json(error);
+    /* request.flash("error", "Could not be deleted");
+    response.redirect("/home") */
+  }
 });
 
 router.post("/admin", async (request, response) => {
