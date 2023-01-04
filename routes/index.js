@@ -5,7 +5,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question } = require("../models");
 
-router.use("/home", homeRouter);
+router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
 
 router.get("/", (request, response) => {
   response.render("index");
@@ -25,19 +25,16 @@ router.get("/login", (request, response) => {
   });
 });
 
-homeRouter.get(
-  "/",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (request, response) => {
-    const election = await Election.findAllElections({
-      adminId: request.user.id,
-    });
-    response.render("home", {
-      title: "Home",
-      election: election,
-    });
-  }
-);
+homeRouter.get("/", async (request, response) => {
+  const election = await Election.findAllElections({
+    adminId: request.user.id,
+  });
+  response.render("home", {
+    title: "Home",
+    election: election,
+    user: request.user.firstName,
+  });
+});
 
 homeRouter.get("/election/new", (request, response) => {
   response.render("addElection", {
@@ -89,7 +86,7 @@ homeRouter.post("/election/new", async (request, response) => {
   try {
     const election = await Election.addElection({
       name: request.body.name,
-      adminId: 2,
+      adminId: request.user.id,
     });
     return response.redirect(`/home/election/${election.id}`);
   } catch (error) {
@@ -111,13 +108,18 @@ homeRouter.post("/election/:id/question/new", async (request, response) => {
 router.post("/admin", async (request, response) => {
   const passwordHash = await hashPassword(request.body.password);
   try {
-    await Admin.addAdmin({
+    const admin = await Admin.addAdmin({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
       passwordHash,
     });
-    return response.redirect("/login");
+    request.login(admin, (err) => {
+      if (err) {
+        console.log(err);
+      }
+      response.redirect("/home");
+    });
   } catch (error) {
     console.log(error);
   }
