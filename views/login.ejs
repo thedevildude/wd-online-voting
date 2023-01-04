@@ -13,11 +13,11 @@
 
 <body>
   <%- include("header", {text: "Login existing user" })%>
-  <form class="flex flex-col m-5" action="" method="post">
+  <form class="flex flex-col m-5" action="/login" method="post">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-    <label class="text-xl text-gray-800 my-2" for="username">Username/Email</label>
+    <label class="text-xl text-gray-800 my-2" for="email">Username/Email</label>
     <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="john.doe@email.com" type="text"
-      name="username" required>
+      name="email" required>
     <label class="text-xl text-gray-800 my-2" for="password">Password</label>
     <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="*******" type="password"
       name="password">

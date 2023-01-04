@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const homeRouter = require("express").Router({ mergeParams: true });
-// eslint-disable-next-line no-unused-vars
-const { Admin, Election, Question, Option } = require("../models");
+const passport = require("passport");
+const connectEnsureLogin = require("connect-ensure-login");
+const { hashPassword } = require("../lib/passwordUtils");
+const { Admin, Election, Question } = require("../models");
 
 router.use("/home", homeRouter);
 
@@ -23,13 +25,19 @@ router.get("/login", (request, response) => {
   });
 });
 
-homeRouter.get("/", async (request, response) => {
-  const election = await Election.findAllElections({ adminId: 2 });
-  response.render("home", {
-    title: "Home",
-    election: election,
-  });
-});
+homeRouter.get(
+  "/",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    const election = await Election.findAllElections({
+      adminId: request.user.id,
+    });
+    response.render("home", {
+      title: "Home",
+      election: election,
+    });
+  }
+);
 
 homeRouter.get("/election/new", (request, response) => {
   response.render("addElection", {
@@ -101,17 +109,28 @@ homeRouter.post("/election/:id/question/new", async (request, response) => {
 });
 
 router.post("/admin", async (request, response) => {
+  const passwordHash = await hashPassword(request.body.password);
   try {
-    const admin = await Admin.addAdmin({
+    await Admin.addAdmin({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
-      passwordHash: request.body.password,
+      passwordHash,
     });
-    return response.json(admin);
+    return response.redirect("/login");
   } catch (error) {
     console.log(error);
   }
 });
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+  }),
+  function (request, response) {
+    response.redirect("/home");
+  }
+);
 
 (module.exports = router), homeRouter;
