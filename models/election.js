@@ -27,8 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async findElection({ electionId }) {
-      return await this.findByPk(electionId);
+    static async findElection({ electionId, adminId }) {
+      return await this.findOne({
+        where: {
+          id: electionId,
+          adminId,
+        },
+      });
     }
 
     static async closeElection({ electionId }) {

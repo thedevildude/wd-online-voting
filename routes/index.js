@@ -44,18 +44,23 @@ homeRouter.get("/election/new", (request, response) => {
 });
 
 homeRouter.get("/election/:id", async (request, response) => {
-  const election = await Election.findElection({
-    electionId: request.params.id,
-  });
-  const question = await Question.findAllQuestions({
-    electionId: election.id,
-  });
-  response.render("manageElection", {
-    csrfToken: request.csrfToken(),
-    title: "Manage Election",
-    election,
-    question,
-  });
+  try {
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    const question = await Question.findAllQuestions({
+      electionId: election.id,
+    });
+    response.render("manageElection", {
+      csrfToken: request.csrfToken(),
+      title: "Manage Election",
+      election,
+      question,
+    });
+  } catch (error) {
+    response.status(401).send({ error: error.message });
+  }
 });
 
 homeRouter.get("/election/:id/question/new", async (request, response) => {
