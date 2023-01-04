@@ -24,15 +24,19 @@ homeRouter.get("/new", (request, response) => {
   });
 });
 
-router.post("/addquestion", async (request, response) => {
-  console.log("Creating a new question");
-  const question = await Question.createQuestion({
-    name: request.body.name,
-    description: request.body.description,
-    electionId: request.body.electionId,
+homeRouter.get("/election/:id", async (request, response) => {
+  const election = await Election.findElection({
+    electionId: request.params.id,
   });
-  console.log("Question created with id:", question.id);
-  return response.redirect(request.get("referer"));
+  const question = await Question.findAllQuestions({
+    electionId: election.id,
+  });
+  response.render("manageElection", {
+    csrfToken: request.csrfToken(),
+    title: "Manage Election",
+    election,
+    question,
+  });
 });
 
 router.get("/addquestion/:id", async (request, response) => {
@@ -44,6 +48,17 @@ router.get("/addquestion/:id", async (request, response) => {
     election,
     csrfToken: request.csrfToken(),
   });
+});
+
+router.post("/addquestion", async (request, response) => {
+  console.log("Creating a new question");
+  const question = await Question.createQuestion({
+    name: request.body.name,
+    description: request.body.description,
+    electionId: request.body.electionId,
+  });
+  console.log("Question created with id:", question.id);
+  return response.redirect(request.get("referer"));
 });
 
 router.post("/admin", async (request, response) => {
