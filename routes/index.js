@@ -39,7 +39,7 @@ homeRouter.get("/election/:id", async (request, response) => {
   });
 });
 
-router.get("/addquestion/:id", async (request, response) => {
+homeRouter.get("/election/addquestion/:id", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
   });
@@ -50,7 +50,7 @@ router.get("/addquestion/:id", async (request, response) => {
   });
 });
 
-router.post("/addquestion", async (request, response) => {
+homeRouter.post("/election/addquestion", async (request, response) => {
   console.log("Creating a new question");
   const question = await Question.createQuestion({
     name: request.body.name,
