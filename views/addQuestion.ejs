@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <%- include("header", {text: "Add new question" })%>
+  <%- include("header", {text: "Add new question", signOutVis: true })%>
   <p class="text-center my-2">Adding question for <%=election.name%></p>
   <form class="flex flex-col m-5" action="./new" method="post">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">

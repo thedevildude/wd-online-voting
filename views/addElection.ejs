@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <%- include("header", {text: "Create a new election" })%>
+  <%- include("header", {text: "Create a new election", signOutVis: true })%>
   <form class="flex flex-col m-5" action="/home/election/new" method="post">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
     <label class="text-xl text-gray-800 my-2" for="name">What's the name of your election?</label>

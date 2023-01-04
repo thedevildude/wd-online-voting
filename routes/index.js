@@ -25,6 +25,16 @@ router.get("/login", (request, response) => {
   });
 });
 
+router.get("/signout", (request, response, next) => {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    request.flash("error", "Logged Out Successfully");
+    response.redirect("/");
+  });
+});
+
 homeRouter.get("/", async (request, response) => {
   const election = await Election.findAllElections({
     adminId: request.user.id,
