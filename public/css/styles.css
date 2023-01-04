@@ -507,6 +507,9 @@ video {
 .hidden {
   display: none;
 }
+.w-56 {
+  width: 14rem;
+}
 .flex-col {
   flex-direction: column;
 }

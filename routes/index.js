@@ -17,7 +17,7 @@ homeRouter.get("/", async (request, response) => {
   });
 });
 
-homeRouter.get("/new", (request, response) => {
+homeRouter.get("/election/new", (request, response) => {
   response.render("addElection", {
     csrfToken: request.csrfToken(),
     title: "Create a new election",
@@ -39,18 +39,43 @@ homeRouter.get("/election/:id", async (request, response) => {
   });
 });
 
-homeRouter.get("/election/addquestion/:id", async (request, response) => {
+homeRouter.get("/election/:id/question/new", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
   });
   return response.render("addQuestion", {
-    title: "Add new question",
+    title: "Add New Question",
     election,
     csrfToken: request.csrfToken(),
   });
 });
 
-homeRouter.post("/election/addquestion", async (request, response) => {
+homeRouter.get("/election/:id/question", async (request, response) => {
+  const question = await Question.findAllQuestions({
+    electionId: request.params.id,
+  });
+  return response.render("manageQuestions", {
+    csrfToken: request.csrfToken(),
+    title: "Manage Questions",
+    question,
+    id: request.params.id,
+  });
+});
+
+homeRouter.post("/election/new", async (request, response) => {
+  console.log("Creating a new election");
+  try {
+    const election = await Election.addElection({
+      name: request.body.name,
+      adminId: 2,
+    });
+    return response.redirect(`/home/election/${election.id}`);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+homeRouter.post("/election/:id/question/new", async (request, response) => {
   console.log("Creating a new question");
   const question = await Question.createQuestion({
     name: request.body.name,
@@ -58,7 +83,7 @@ homeRouter.post("/election/addquestion", async (request, response) => {
     electionId: request.body.electionId,
   });
   console.log("Question created with id:", question.id);
-  return response.redirect(request.get("referer"));
+  return response.redirect(`/home/election/${request.params.id}/question`);
 });
 
 router.post("/admin", async (request, response) => {
@@ -70,19 +95,6 @@ router.post("/admin", async (request, response) => {
       passwordHash: request.body.password,
     });
     return response.json(admin);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.post("/addElection", async (request, response) => {
-  console.log("Creating a new election");
-  try {
-    const election = await Election.addElection({
-      name: request.body.name,
-      adminId: 2,
-    });
-    return response.json(election);
   } catch (error) {
     console.log(error);
   }
