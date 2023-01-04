@@ -7,6 +7,13 @@ const { Admin, Election, Question } = require("../models");
 
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
 
+// Helping Sync link
+router.get("/sync", async (request, response) => {
+  await Admin.sync({ alter: true });
+  await Election.sync({ alter: true });
+  await Question.sync({ alter: true });
+  response.redirect("/");
+});
 router.get("/", async (request, response) => {
   response.render("index");
 });
