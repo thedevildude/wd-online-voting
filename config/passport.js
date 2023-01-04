@@ -18,15 +18,16 @@ passport.use(
         .then(async function (user) {
           const result = await validatePassword(password, user.passwordHash);
           if (result) {
-            console.log("Correct password");
             return done(null, user);
           } else {
-            console.log("Incorrect Password");
-            return done(null, false);
+            return done(null, false, { message: "Invalid Password" });
           }
         })
         .catch((error) => {
-          return done(error);
+          return done(null, false, {
+            message: "Username is not registered",
+            error,
+          });
         });
     }
   )

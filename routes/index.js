@@ -7,7 +7,7 @@ const { Admin, Election, Question } = require("../models");
 
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
 
-router.get("/", (request, response) => {
+router.get("/", async (request, response) => {
   response.render("index");
 });
 
@@ -111,8 +111,11 @@ homeRouter.post("/election/:id/question/new", async (request, response) => {
 });
 
 router.post("/admin", async (request, response) => {
-  const passwordHash = await hashPassword(request.body.password);
   try {
+    if (request.body.password.length < 1) {
+      throw new Error("Password cannot be empty");
+    }
+    const passwordHash = await hashPassword(request.body.password);
     const admin = await Admin.addAdmin({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
@@ -126,7 +129,10 @@ router.post("/admin", async (request, response) => {
       response.redirect("/home");
     });
   } catch (error) {
-    console.log(error);
+    request.flash("error", error.message);
+    if (error.message == "Email is already registered") {
+      return response.redirect("/login");
+    } else return response.redirect("/signup");
   }
 });
 
@@ -134,6 +140,7 @@ router.post(
   "/login",
   passport.authenticate("local", {
     failureRedirect: "/login",
+    failureFlash: true,
   }),
   function (request, response) {
     response.redirect("/home");

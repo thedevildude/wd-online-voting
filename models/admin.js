@@ -27,7 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       firstName: DataTypes.STRING,
       lastName: DataTypes.STRING,
-      email: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: "Email is already registered",
+        },
+      },
       passwordHash: DataTypes.STRING,
     },
     {
