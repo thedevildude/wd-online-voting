@@ -37,11 +37,11 @@
       <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
     <% } %>
   <% } %>
-  <form action="<%=election.id%>/name" method="post" class="flex items-center justify-between m-5">
-    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-    <input name="name" type="text" class="border border-green-600 rounded-xl p-5 text-2xl w-4/5" placeholder="Update Name of Election">
-    <button type="submit" class="text-2xl text-white bg-green-600 rounded-xl m-5 p-2 w-56 text-center">Update Name</button>
-  </form>
+  <div class="flex items-center justify-start m-5">
+    <a href="../" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
+    <a href="./<%=election.id%>/name" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-40 text-center">Update Election</a>
+    <a href="#" onclick="deleteElection(`<%= election.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Election</a>
+  </div>
   <div class="flex items-center justify-between rounded-3xl bg-gray-200 m-5 p-5">
     <p class="text-2xl text-gray-800">You have <%=question.length%> Questions in this Election</p>
     <a href="<%=election.id%>/question" class="text-2xl text-white bg-green-600 rounded-xl p-2 w-56 text-center">Manage Questions</a>
@@ -50,6 +50,5 @@
     <p class="text-2xl text-gray-800">You have 0 Voters in this Election</p>
     <a href="" class="text-2xl text-white bg-green-600 rounded-xl p-2 w-56 text-center">Manage Voters</a>
   </div>
-  <a href="#" onclick="deleteElection(`<%= election.id%>`)" class="text-xl m-5 text-white bg-red-600 rounded-xl p-2 w-40 text-center">Delete Election</a>
 </body>
 </html>

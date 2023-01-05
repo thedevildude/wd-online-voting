@@ -81,6 +81,22 @@ homeRouter.get("/election/:id", async (request, response) => {
   }
 });
 
+homeRouter.get("/election/:id/name", async (request, response) => {
+  const election = await Election.findElection({
+    electionId: request.params.id,
+    adminId: request.user.id,
+  });
+  try {
+    response.render("updateElection", {
+      csrfToken: request.csrfToken(),
+      title: "Update Election",
+      election,
+    });
+  } catch (error) {
+    response.status(401).send({ error: error.message });
+  }
+});
+
 homeRouter.get("/election/:id/question/new", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
@@ -126,7 +142,7 @@ homeRouter.post("/election/:id/name", async (request, response) => {
       adminId: request.user.id,
     });
     request.flash("error", "Election name updated sucessfully");
-    return response.redirect("back");
+    return response.redirect(`/home/election/${request.params.id}`);
   } catch (error) {
     return response.status(422).json(error.message);
   }
