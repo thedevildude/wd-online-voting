@@ -28,6 +28,27 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async findQuestion({ electionId, questionId }) {
+      return await this.findOne({
+        where: {
+          electionId,
+          id: questionId,
+        },
+      });
+    }
+
+    static async updateName({ electionId, name, questionId }) {
+      return await this.update(
+        { name },
+        {
+          where: {
+            id: questionId,
+            electionId,
+          },
+        }
+      );
+    }
   }
   Question.init(
     {

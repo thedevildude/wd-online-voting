@@ -88,15 +88,15 @@ homeRouter.get("/election/:id", async (request, response) => {
 });
 
 homeRouter.get("/election/:id/name", async (request, response) => {
-  const election = await Election.findElection({
-    electionId: request.params.id,
-    adminId: request.user.id,
-  });
   try {
-    response.render("updateElection", {
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    response.render("changeName", {
       csrfToken: request.csrfToken(),
-      title: "Update Election",
-      election,
+      title: "Change Election Name",
+      data: election,
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
@@ -128,6 +128,38 @@ questionRouter.get("/", async (request, response) => {
     });
   } catch (error) {
     return response.json({ error: error.message });
+  }
+});
+
+questionRouter.get("/:qid", async (request, response) => {
+  try {
+    const question = await Question.findQuestion({
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    response.render("updateQuestion", {
+      csrfToken: request.csrfToken(),
+      title: "Update Question",
+      question,
+    });
+  } catch (error) {
+    return response.json({ error: error.message });
+  }
+});
+
+questionRouter.get("/:qid/name", async (request, response) => {
+  try {
+    const question = await Question.findQuestion({
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    response.render("changeName", {
+      csrfToken: request.csrfToken(),
+      title: "Change Question",
+      data: question,
+    });
+  } catch (error) {
+    response.status(401).send({ error: error.message });
   }
 });
 
@@ -180,6 +212,22 @@ questionRouter.post("/new", async (request, response) => {
   });
   console.log("Question created with id:", question.id);
   return response.redirect(`/home/election/${request.params.id}/question`);
+});
+
+questionRouter.post("/:qid/name", async (request, response) => {
+  try {
+    await Question.updateName({
+      name: request.body.name,
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    request.flash("error", "Question changed sucessfully");
+    return response.redirect(
+      `/home/election/${request.params.id}/question/${request.params.qid}`
+    );
+  } catch (error) {
+    return response.status(422).json(error.message);
+  }
 });
 
 router.post("/admin", async (request, response) => {

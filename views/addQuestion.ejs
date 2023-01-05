@@ -12,15 +12,18 @@
 </head>
 
 <body>
-  <%- include("header", {text: "Add new question", signOutVis: true })%>
-  <p class="text-center my-2">Adding question for <%=election.name%></p>
+  <% const e_title = "Adding New Question to " + election.name%>
+  <%- include("header", {text: e_title, signOutVis: true })%>
+  <div class="flex items-center justify-start m-5">
+    <a href="./" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
+  </div>
   <form class="flex flex-col m-5" action="./new" method="post">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
     <label class="text-xl text-gray-800 my-2" for="name">What's your question?*</label>
     <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="Question...." type="text"
       name="name" required>
     <label class="text-xl text-gray-800 my-2" for="description">Describe your question</label>
-    <input class="border border-green-600 rounded-xl p-5 my-2 text-xl" placeholder="Description...." type="text"
+    <input class="border border-green-600 rounded-xl p-5 mt-2 mb-4 text-xl" placeholder="Description...." type="text"
       name="description">
     <button class="text-2xl text-white bg-green-600 rounded-xl p-2 text-center" type="submit">Add Question</button>
   </form>
