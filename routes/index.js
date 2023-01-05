@@ -118,6 +118,20 @@ homeRouter.post("/election/new", async (request, response) => {
   }
 });
 
+homeRouter.post("/election/:id/name", async (request, response) => {
+  try {
+    await Election.updateName({
+      name: request.body.name,
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    request.flash("error", "Election name updated sucessfully");
+    return response.redirect("back");
+  } catch (error) {
+    return response.status(422).json(error.message);
+  }
+});
+
 homeRouter.post("/election/:id/question/new", async (request, response) => {
   console.log("Creating a new question");
   const question = await Question.createQuestion({
