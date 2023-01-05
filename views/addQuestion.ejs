@@ -16,7 +16,6 @@
   <p class="text-center my-2">Adding question for <%=election.name%></p>
   <form class="flex flex-col m-5" action="./new" method="post">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
-    <input type="hidden" name="electionId" value="<%=election.id%>">
     <label class="text-xl text-gray-800 my-2" for="name">What's your question?*</label>
     <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="Question...." type="text"
       name="name" required>

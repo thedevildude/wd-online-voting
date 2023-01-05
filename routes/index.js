@@ -1,11 +1,17 @@
 const router = require("express").Router();
 const homeRouter = require("express").Router({ mergeParams: true });
+const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question } = require("../models");
 
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
+router.use(
+  "/home/election/:id/question",
+  connectEnsureLogin.ensureLoggedIn(),
+  questionRouter
+);
 
 // Helping Sync link
 router.get("/sync", async (request, response) => {
@@ -97,7 +103,7 @@ homeRouter.get("/election/:id/name", async (request, response) => {
   }
 });
 
-homeRouter.get("/election/:id/question/new", async (request, response) => {
+questionRouter.get("/new", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
     adminId: request.user.id,
@@ -109,16 +115,20 @@ homeRouter.get("/election/:id/question/new", async (request, response) => {
   });
 });
 
-homeRouter.get("/election/:id/question", async (request, response) => {
-  const question = await Question.findAllQuestions({
-    electionId: request.params.id,
-  });
-  return response.render("manageQuestions", {
-    csrfToken: request.csrfToken(),
-    title: "Manage Questions",
-    question,
-    id: request.params.id,
-  });
+questionRouter.get("/", async (request, response) => {
+  try {
+    const question = await Question.findAllQuestions({
+      electionId: request.params.id,
+    });
+    return response.render("manageQuestions", {
+      csrfToken: request.csrfToken(),
+      title: "Manage Questions",
+      question,
+      id: request.params.id,
+    });
+  } catch (error) {
+    return response.json({ error: error.message });
+  }
 });
 
 homeRouter.post("/election/new", async (request, response) => {
@@ -148,17 +158,6 @@ homeRouter.post("/election/:id/name", async (request, response) => {
   }
 });
 
-homeRouter.post("/election/:id/question/new", async (request, response) => {
-  console.log("Creating a new question");
-  const question = await Question.createQuestion({
-    name: request.body.name,
-    description: request.body.description,
-    electionId: request.body.electionId,
-  });
-  console.log("Question created with id:", question.id);
-  return response.redirect(`/home/election/${request.params.id}/question`);
-});
-
 homeRouter.delete("/election/:id/delete", async (request, response) => {
   try {
     console.log("Deleting a election by id: ", request.params.id);
@@ -170,6 +169,17 @@ homeRouter.delete("/election/:id/delete", async (request, response) => {
   } catch (error) {
     return response.status(422).json(error);
   }
+});
+
+questionRouter.post("/new", async (request, response) => {
+  console.log("Creating a new question");
+  const question = await Question.createQuestion({
+    name: request.body.name,
+    description: request.body.description,
+    electionId: request.params.id,
+  });
+  console.log("Question created with id:", question.id);
+  return response.redirect(`/home/election/${request.params.id}/question`);
 });
 
 router.post("/admin", async (request, response) => {
