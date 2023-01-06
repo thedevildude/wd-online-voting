@@ -311,7 +311,7 @@ questionRouter.post("/:qid/option", async (request, response) => {
       name: request.body.name,
       questionId: request.body.questionId,
     });
-    request.flash("error", "Option added sucessfully");
+    request.flash("error", "Option added successfully");
     return response.redirect(
       `/home/election/${request.params.id}/question/${request.params.qid}`
     );
@@ -320,6 +320,21 @@ questionRouter.post("/:qid/option", async (request, response) => {
     return response.redirect(
       `/home/election/${request.params.id}/question/${request.params.qid}`
     );
+  }
+});
+
+// API Route for deleting option
+questionRouter.delete("/:qid/option", async (request, response) => {
+  try {
+    await Option.deleteOption({
+      questionId: request.params.qid,
+      optionId: request.body.oid,
+    });
+    request.flash("error", "Option deleted successfully");
+    return response.json({ success: true });
+  } catch (error) {
+    request.flash("error", error.message);
+    return response.status(422).json(error.message);
   }
 });
 

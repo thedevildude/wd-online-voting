@@ -510,11 +510,20 @@ video {
 .ml-5 {
   margin-left: 1.25rem;
 }
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+.ml-2 {
+  margin-left: 0.5rem;
+}
 .flex {
   display: flex;
 }
 .hidden {
   display: none;
+}
+.h-5 {
+  height: 1.25rem;
 }
 .w-40 {
   width: 10rem;
@@ -527,6 +536,9 @@ video {
 }
 .w-60 {
   width: 15rem;
+}
+.w-5 {
+  width: 1.25rem;
 }
 .flex-col {
   flex-direction: column;
@@ -649,4 +661,8 @@ video {
 .text-green-600 {
   --tw-text-opacity: 1;
   color: rgb(22 163 74 / var(--tw-text-opacity));
+}
+
+.option-item:hover .thrash-icon {
+  display: block;
 }

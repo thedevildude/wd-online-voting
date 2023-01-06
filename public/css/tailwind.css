@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.option-item:hover .thrash-icon {
+  display: block;
+}
