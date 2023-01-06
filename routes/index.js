@@ -4,7 +4,7 @@ const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
-const { Admin, Election, Question, Option } = require("../models");
+const { Admin, Election, Question, Option, Voters } = require("../models");
 
 // homeRouter is used for ease of writing APIs
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
@@ -20,6 +20,7 @@ router.get("/sync", async (request, response) => {
   await Election.sync({ alter: true });
   await Question.sync({ alter: true });
   await Option.sync({ alter: true });
+  await Voters.sync({ alter: true });
   response.redirect("/");
 });
 router.get("/", async (request, response) => {
