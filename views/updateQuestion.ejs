@@ -15,14 +15,14 @@
       console.log("Deleting Question");
       fetch(`/home/election/${id}/question/${qid}/delete`, {
         method: "delete",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-type": "application/json", redirect: "follow" },
         body: JSON.stringify({
           "_csrf": token
         })
       })
         .then((res) => {
           if (res.ok) {
-            window.open(`/home/election/${id}/question`, "_self")
+            window.open(`/home/election/${id}/question`, "_self");
           }
         })
         .catch((err) => console.error(err));

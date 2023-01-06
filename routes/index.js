@@ -298,6 +298,7 @@ questionRouter.delete("/:qid/delete", async (request, response) => {
       electionId: request.params.id,
       questionId: request.params.qid,
     });
+    request.flash("error", "Question deleted sucessfully");
     return response.json({ success: true });
   } catch (error) {
     return response.status(422).json(error.message);
