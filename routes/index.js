@@ -4,7 +4,7 @@ const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
-const { Admin, Election, Question } = require("../models");
+const { Admin, Election, Question, Option } = require("../models");
 
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
 router.use(
@@ -18,6 +18,7 @@ router.get("/sync", async (request, response) => {
   await Admin.sync({ alter: true });
   await Election.sync({ alter: true });
   await Question.sync({ alter: true });
+  await Option.sync({ alter: true });
   response.redirect("/");
 });
 router.get("/", async (request, response) => {
@@ -146,10 +147,14 @@ questionRouter.get("/:qid", async (request, response) => {
       electionId: request.params.id,
       adminId: request.user.id,
     });
+    const option = await Option.findAllOptions({
+      questionId: request.params.qid,
+    });
     response.render("updateQuestion", {
       csrfToken: request.csrfToken(),
       title: "Update Question",
       question,
+      option,
       id: election.id,
     });
   } catch (error) {
@@ -232,14 +237,17 @@ homeRouter.delete("/election/:id/delete", async (request, response) => {
 });
 
 questionRouter.post("/new", async (request, response) => {
-  console.log("Creating a new question");
-  const question = await Question.createQuestion({
-    name: request.body.name,
-    description: request.body.description,
-    electionId: request.params.id,
-  });
-  console.log("Question created with id:", question.id);
-  return response.redirect(`/home/election/${request.params.id}/question`);
+  try {
+    const question = await Question.createQuestion({
+      name: request.body.name,
+      description: request.body.description,
+      electionId: request.params.id,
+    });
+    console.log("Question created with id:", question.id);
+    return response.redirect(`/home/election/${request.params.id}/question`);
+  } catch (error) {
+    return response.status(422).json(error.message);
+  }
 });
 
 questionRouter.post("/:qid/name", async (request, response) => {
@@ -283,7 +291,25 @@ questionRouter.delete("/:qid/delete", async (request, response) => {
     });
     return response.json({ success: true });
   } catch (error) {
-    return response.status(422).json(error);
+    return response.status(422).json(error.message);
+  }
+});
+
+questionRouter.post("/:qid/option", async (request, response) => {
+  try {
+    await Option.createOption({
+      name: request.body.name,
+      questionId: request.body.questionId,
+    });
+    request.flash("error", "Option added sucessfully");
+    return response.redirect(
+      `/home/election/${request.params.id}/question/${request.params.qid}`
+    );
+  } catch (error) {
+    request.flash("error", error.message);
+    return response.redirect(
+      `/home/election/${request.params.id}/question/${request.params.qid}`
+    );
   }
 });
 
@@ -324,4 +350,4 @@ router.post(
   }
 );
 
-(module.exports = router), homeRouter;
+module.exports = router;

@@ -10,12 +10,37 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Option.belongsTo(models.Question, {
         foreignKey: "questionId",
+        onDelete: "CASCADE",
+      });
+    }
+
+    static async createOption({ name, questionId }) {
+      return await this.create({
+        option_name: name,
+        votes: 0,
+        questionId,
+      });
+    }
+
+    static async findAllOptions({ questionId }) {
+      return await this.findAll({
+        where: {
+          questionId,
+        },
       });
     }
   }
   Option.init(
     {
-      option_name: DataTypes.STRING,
+      option_name: {
+        type: DataTypes.STRING,
+        validate: {
+          len: {
+            args: [1, 15],
+            msg: "Option must be less than 15 characters",
+          },
+        },
+      },
       votes: DataTypes.INTEGER,
       questionId: DataTypes.INTEGER,
     },

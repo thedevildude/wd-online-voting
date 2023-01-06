@@ -47,15 +47,16 @@
   <div class="border bg-gray-200 m-5">
     <p class="p-5"><%=question.description%></p>
   </div>
-  <form action="" method="post" class="flex items-center justify-between m-5">
+  <form action="./<%=question.id%>/option" method="post" class="flex items-center justify-between m-5">
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+    <input type="hidden" name="questionId" value="<%=question.id%>">
     <input name="name" type="text" class="border border-green-600 rounded-xl p-5 text-2xl w-4/5" placeholder="Enter new option....">
     <button type="submit" class="text-2xl text-white bg-green-600 rounded-xl m-5 p-2 w-56 text-center">Add Option</button>
   </form>
   <p class="text-2xl text-gray-800 ml-5">Your Options</p>
   <div class="flex flex-col bg-gray-200 m-5">
-    <% for(let i = 0; i< question.length; i++) {%>
-      <p class="p-5 text-gray-800 border-b-2 border-gray-300"></p>
+    <% for(let i = 0; i< option.length; i++) {%>
+      <p class="p-5 text-gray-800 border-b-2 border-gray-300"><%=option[i].option_name%></p>
       <%}%>
   </div>
 </body>
