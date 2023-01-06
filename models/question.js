@@ -61,6 +61,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async deleteQuestion({ electionId, questionId }) {
+      return await this.destroy({
+        where: {
+          electionId,
+          id: questionId,
+        },
+      });
+    }
   }
   Question.init(
     {

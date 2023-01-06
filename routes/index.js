@@ -121,11 +121,15 @@ questionRouter.get("/", async (request, response) => {
     const question = await Question.findAllQuestions({
       electionId: request.params.id,
     });
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
     return response.render("manageQuestions", {
       csrfToken: request.csrfToken(),
       title: "Manage Questions",
       question,
-      id: request.params.id,
+      name: election.name,
     });
   } catch (error) {
     return response.json({ error: error.message });
@@ -138,10 +142,15 @@ questionRouter.get("/:qid", async (request, response) => {
       electionId: request.params.id,
       questionId: request.params.qid,
     });
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
     response.render("updateQuestion", {
       csrfToken: request.csrfToken(),
       title: "Update Question",
       question,
+      id: election.id,
     });
   } catch (error) {
     return response.json({ error: error.message });
@@ -262,6 +271,19 @@ questionRouter.post("/:qid/description", async (request, response) => {
     );
   } catch (error) {
     return response.status(422).json(error.message);
+  }
+});
+
+questionRouter.delete("/:qid/delete", async (request, response) => {
+  console.log("Deleting a question by id: ", request.params.qid);
+  try {
+    await Question.deleteQuestion({
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    return response.json({ success: true });
+  } catch (error) {
+    return response.status(422).json(error);
   }
 });
 
