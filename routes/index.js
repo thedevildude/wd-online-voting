@@ -6,6 +6,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question, Option } = require("../models");
 
+// homeRouter is used for ease of writing APIs
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
 router.use(
   "/home/election/:id/question",
@@ -13,7 +14,7 @@ router.use(
   questionRouter
 );
 
-// Helping Sync link
+// Helping Database Sync link: Should be removed during production
 router.get("/sync", async (request, response) => {
   await Admin.sync({ alter: true });
   await Election.sync({ alter: true });
@@ -25,6 +26,7 @@ router.get("/", async (request, response) => {
   response.render("index");
 });
 
+// Sign up Page
 router.get("/signup", (request, response) => {
   response.render("signup", {
     csrfToken: request.csrfToken(),
@@ -32,6 +34,7 @@ router.get("/signup", (request, response) => {
   });
 });
 
+// Sign In or Login Page
 router.get("/login", (request, response) => {
   response.render("login", {
     csrfToken: request.csrfToken(),
@@ -39,6 +42,7 @@ router.get("/login", (request, response) => {
   });
 });
 
+// Sign Out ot Log out route
 router.get("/signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {
@@ -49,6 +53,7 @@ router.get("/signout", (request, response, next) => {
   });
 });
 
+// Homepage for signed in user
 homeRouter.get("/", async (request, response) => {
   const election = await Election.findAllElections({
     adminId: request.user.id,
@@ -61,6 +66,7 @@ homeRouter.get("/", async (request, response) => {
   });
 });
 
+// Page for adding new Election
 homeRouter.get("/election/new", (request, response) => {
   response.render("addElection", {
     csrfToken: request.csrfToken(),
@@ -68,6 +74,7 @@ homeRouter.get("/election/new", (request, response) => {
   });
 });
 
+// Page for managing elections
 homeRouter.get("/election/:id", async (request, response) => {
   try {
     const election = await Election.findElection({
@@ -88,6 +95,7 @@ homeRouter.get("/election/:id", async (request, response) => {
   }
 });
 
+// Page for updating name of election
 homeRouter.get("/election/:id/name", async (request, response) => {
   try {
     const election = await Election.findElection({
@@ -105,6 +113,7 @@ homeRouter.get("/election/:id/name", async (request, response) => {
   }
 });
 
+// Page for adding a new question to election
 questionRouter.get("/new", async (request, response) => {
   const election = await Election.findElection({
     electionId: request.params.id,
