@@ -19,16 +19,22 @@
   <div class="flex items-center justify-start m-5">
     <a href="./" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
     <a href="./<%=question.id%>/name" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-50 text-center">Change Question</a>
+    <a href="./<%=question.id%>/description" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-60 text-center">Update Description</a>
     <a href="#" onclick="deleteQuestion(`<%= question.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Question</a>
   </div>
-  <div class="flex items-center justify-between rounded-3xl bg-gray-200 m-5 p-5">
-    <p class="text-2xl text-gray-800">You have <%=question.length%> Options in this Election</p>
-    <a href="./question/new" class="text-2xl text-white bg-green-600 rounded-xl p-2 w-56 text-center">Add Option</a>
+  <p class="text-2xl text-gray-800 ml-5">Description</p>
+  <div class="border bg-gray-200 m-5">
+    <p class="p-5"><%=question.description%></p>
   </div>
+  <form action="" method="post" class="flex items-center justify-between m-5">
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+    <input name="name" type="text" class="border border-green-600 rounded-xl p-5 text-2xl w-4/5" placeholder="Enter new option....">
+    <button type="submit" class="text-2xl text-white bg-green-600 rounded-xl m-5 p-2 w-56 text-center">Add Option</button>
+  </form>
   <p class="text-2xl text-gray-800 ml-5">Your Options</p>
   <div class="flex flex-col bg-gray-200 m-5">
     <% for(let i = 0; i< question.length; i++) {%>
-      <p class="p-5 text-gray-800 border-b-2 border-gray-300"><%=question[i].name%></p>
+      <p class="p-5 text-gray-800 border-b-2 border-gray-300"></p>
       <%}%>
   </div>
 </body>

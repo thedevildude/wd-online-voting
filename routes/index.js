@@ -95,8 +95,9 @@ homeRouter.get("/election/:id/name", async (request, response) => {
     });
     response.render("changeName", {
       csrfToken: request.csrfToken(),
-      title: "Change Election Name",
+      title: "Change Election",
       data: election,
+      typeData: "name",
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
@@ -157,6 +158,24 @@ questionRouter.get("/:qid/name", async (request, response) => {
       csrfToken: request.csrfToken(),
       title: "Change Question",
       data: question,
+      typeData: "name",
+    });
+  } catch (error) {
+    response.status(401).send({ error: error.message });
+  }
+});
+
+questionRouter.get("/:qid/description", async (request, response) => {
+  try {
+    const question = await Question.findQuestion({
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    response.render("changeName", {
+      csrfToken: request.csrfToken(),
+      title: "Change Description",
+      data: question,
+      typeData: "description",
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
@@ -222,6 +241,22 @@ questionRouter.post("/:qid/name", async (request, response) => {
       questionId: request.params.qid,
     });
     request.flash("error", "Question changed sucessfully");
+    return response.redirect(
+      `/home/election/${request.params.id}/question/${request.params.qid}`
+    );
+  } catch (error) {
+    return response.status(422).json(error.message);
+  }
+});
+
+questionRouter.post("/:qid/description", async (request, response) => {
+  try {
+    await Question.updateDescription({
+      description: request.body.name,
+      electionId: request.params.id,
+      questionId: request.params.qid,
+    });
+    request.flash("error", "Description updated sucessfully");
     return response.redirect(
       `/home/election/${request.params.id}/question/${request.params.qid}`
     );

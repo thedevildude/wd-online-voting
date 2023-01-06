@@ -49,6 +49,18 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async updateDescription({ electionId, description, questionId }) {
+      return await this.update(
+        { description },
+        {
+          where: {
+            id: questionId,
+            electionId,
+          },
+        }
+      );
+    }
   }
   Question.init(
     {
