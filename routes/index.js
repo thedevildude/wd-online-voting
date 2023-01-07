@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const homeRouter = require("express").Router({ mergeParams: true });
+const voteRouter = require("./voteRouter");
 const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
@@ -13,6 +14,8 @@ router.use(
   connectEnsureLogin.ensureLoggedIn(),
   questionRouter
 );
+// voteRouter is used for ballot preview and voters to vote on election
+router.use("/vote", connectEnsureLogin.ensureLoggedIn(), voteRouter);
 
 // Helping Database Sync link: Should be removed during production
 router.get("/sync", async (request, response) => {

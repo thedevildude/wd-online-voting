@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%=title%></title>
+</head>
+<body>
+  <% const e_title = election.name%>
+  <%- include("header", {text: e_title, signOutVis: false })%>
+  <% if(messages && messages.error && messages.error.length > 0)  { %>
+    <% for(var i = 0; i < messages.error.length; i++) { %>
+      <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
+    <% } %>
+  <% } %>
+  <div class="m-5">
+    <div class="flex flex-col justify-start p-5 bg-gray-100">
+      <p class="text-2xl">1) <%=question[0].name%></p>
+      <p class="text-base mx-5">Description: <%=question[0].description%></p>
+    </div>
+  </div>
+</body>
+</html>
