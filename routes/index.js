@@ -82,7 +82,12 @@ homeRouter.get("/election/:id", async (request, response) => {
       electionId: request.params.id,
       adminId: request.user.id,
     });
+    if (election === null)
+      throw new Error("Not eligible to manage this election");
     const question = await Question.findAllQuestions({
+      electionId: election.id,
+    });
+    const voter = await Voters.findAllVoters({
       electionId: election.id,
     });
     response.render("manageElection", {
@@ -90,6 +95,7 @@ homeRouter.get("/election/:id", async (request, response) => {
       title: "Manage Election",
       election,
       question,
+      voterLength: voter.length,
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
@@ -108,6 +114,27 @@ homeRouter.get("/election/:id/name", async (request, response) => {
       title: "Change Election",
       data: election,
       typeData: "name",
+    });
+  } catch (error) {
+    response.status(401).send({ error: error.message });
+  }
+});
+
+homeRouter.get("/election/:id/addvoters", async (request, response) => {
+  try {
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    if (election === null) throw new Error("Not eligible to add voter");
+    const voter = await Voters.findAllVoters({
+      electionId: election.id,
+    });
+    response.render("addVoters", {
+      title: "Register Voters",
+      csrfToken: request.csrfToken(),
+      election,
+      voter,
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
@@ -243,6 +270,22 @@ homeRouter.delete("/election/:id/delete", async (request, response) => {
     return response.json({ success: true });
   } catch (error) {
     return response.status(422).json(error);
+  }
+});
+
+homeRouter.post("/election/:id/addvoters", async (request, response) => {
+  const passwordHash = await hashPassword(request.body.password);
+  try {
+    await Voters.addVoter({
+      voter_id: request.body.voter_id,
+      passwordHash,
+      electionId: request.body.electionId,
+    });
+    request.flash("error", "Voter registered sucessfully");
+    return response.redirect(`/home/election/${request.params.id}/addvoters`);
+  } catch (error) {
+    request.flash("error", error.message);
+    return response.redirect(`/home/election/${request.params.id}/addvoters`);
   }
 });
 

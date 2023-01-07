@@ -14,11 +14,19 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async addVoters({ voter_id, passwordHash, electionId }) {
+    static async addVoter({ voter_id, passwordHash, electionId }) {
       return await this.create({
         voter_id,
         passwordHash,
         eligible_electionId: electionId,
+      });
+    }
+
+    static async findAllVoters({ electionId }) {
+      return await this.findAll({
+        where: {
+          eligible_electionId: electionId,
+        },
       });
     }
   }
