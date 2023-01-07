@@ -7,18 +7,41 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const router = require("./routes");
 const flash = require("connect-flash");
+const Sequelize = require("sequelize");
+const process = require("process");
+const env = process.env.NODE_ENV || "development";
+const config = require(__dirname + "/config/config.json")[env];
 
+var SequelizeStore = require("connect-session-sequelize")(session.Store);
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
+}
+var sessionStore = new SequelizeStore({
+  db: sequelize,
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("any secret string"));
 app.use(
   session({
     secret: "any secret string",
+    store: sessionStore,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   })
 );
+// Run once to create session store table
+sessionStore.sync();
+
 // Middleware to remove the trailing "/" from a route
 app.use((request, response, next) => {
   if (request.path.slice(-1) == "/" && request.path.length > 1) {
