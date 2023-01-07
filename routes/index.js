@@ -289,6 +289,26 @@ homeRouter.post("/election/:id/addvoters", async (request, response) => {
   }
 });
 
+// API Route for deleting voters
+homeRouter.delete("/election/:id/addvoters", async (request, response) => {
+  try {
+    const election = await Election.findElection({
+      electionId: request.body.electionId,
+      adminId: request.user.id,
+    });
+    if (election === null) throw new Error("Not eligible to remove voter");
+    await Voters.deleteVoter({
+      voter_id: request.body.voter_id,
+      electionId: request.body.electionId,
+    });
+    request.flash("error", "Voter deleted successfully");
+    return response.json({ success: true });
+  } catch (error) {
+    request.flash("error", error.message);
+    return response.status(422).json(error.message);
+  }
+});
+
 questionRouter.post("/new", async (request, response) => {
   try {
     const question = await Question.createQuestion({
