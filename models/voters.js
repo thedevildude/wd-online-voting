@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      type: {
+        type: DataTypes.STRING,
+        defaultValue: "voter",
+      },
     },
     {
       sequelize,
