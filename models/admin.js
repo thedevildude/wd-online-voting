@@ -36,10 +36,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       passwordHash: DataTypes.STRING,
-      type: {
-        type: DataTypes.STRING,
-        defaultValue: "admin",
-      },
     },
     {
       sequelize,
