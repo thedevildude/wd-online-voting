@@ -6,7 +6,8 @@ const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question, Option, Voters } = require("../models");
-const { isAdmin, isVoter } = require("./authMiddleware");
+const { isAdmin } = require("./authMiddleware");
+const { validateElection } = require("./validateElection");
 
 // homeRouter is used for ease of writing APIs
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), isAdmin, homeRouter);
@@ -17,7 +18,7 @@ router.use(
   questionRouter
 );
 // voteRouter is used for ballot preview and voters to vote on election
-router.use("/vote", connectEnsureLogin.ensureLoggedIn(), isVoter, voteRouter);
+router.use("/vote", voteRouter);
 
 // Helping Database Sync link: Should be removed during production
 router.get("/sync", async (request, response) => {
@@ -146,6 +147,25 @@ homeRouter.get("/election/:id/addvoters", async (request, response) => {
     response.status(401).send({ error: error.message });
   }
 });
+
+homeRouter.get(
+  "/election/:id/preview",
+  validateElection,
+  async (request, response) => {
+    try {
+      response.render("voteElection", {
+        title: "Vote Election",
+        csrfToken: request.csrfToken(),
+        election: request.election,
+        question: request.question,
+        options: request.options,
+      });
+    } catch (error) {
+      request.flash("error", error.message);
+      response.redirect("/home");
+    }
+  }
+);
 
 // Page for adding a new question to election
 questionRouter.get("/new", async (request, response) => {
