@@ -6,16 +6,18 @@ const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question, Option, Voters } = require("../models");
+const { isAdmin, isVoter } = require("./authMiddleware");
 
 // homeRouter is used for ease of writing APIs
-router.use("/home", connectEnsureLogin.ensureLoggedIn(), homeRouter);
+router.use("/home", connectEnsureLogin.ensureLoggedIn(), isAdmin, homeRouter);
 router.use(
   "/home/election/:id/question",
   connectEnsureLogin.ensureLoggedIn(),
+  isAdmin,
   questionRouter
 );
 // voteRouter is used for ballot preview and voters to vote on election
-router.use("/vote", connectEnsureLogin.ensureLoggedIn(), voteRouter);
+router.use("/vote", connectEnsureLogin.ensureLoggedIn(), isVoter, voteRouter);
 
 // Helping Database Sync link: Should be removed during production
 router.get("/sync", async (request, response) => {
@@ -24,6 +26,7 @@ router.get("/sync", async (request, response) => {
   await Question.sync({ alter: true });
   await Option.sync({ alter: true });
   await Voters.sync({ alter: true });
+  request.flash("error", "Database Synced");
   response.redirect("/");
 });
 router.get("/", async (request, response) => {
@@ -433,7 +436,7 @@ router.post("/admin", async (request, response) => {
 
 router.post(
   "/login",
-  passport.authenticate("local", {
+  passport.authenticate("local-admin", {
     failureRedirect: "/login",
     failureFlash: true,
   }),

@@ -1,4 +1,5 @@
 const voteRouter = require("express").Router({ mergeParams: true });
+const passport = require("passport");
 // eslint-disable-next-line no-unused-vars
 const { Admin, Election, Question, Option, Voters } = require("../models");
 
@@ -53,6 +54,26 @@ voteRouter.get(
       request.flash("error", error.message);
       response.redirect("/home");
     }
+  }
+);
+
+voteRouter.get("/election/:id/voter-login", async (request, response) => {
+  response.render("voterLogin", {
+    csrfToken: request.csrfToken(),
+    title: "Voter Login",
+  });
+});
+
+voteRouter.post(
+  "/election/:id/voter-login",
+  passport.authenticate("voter-login", {
+    failureRedirect: "back",
+    failureFlash: true,
+  }),
+  (request, response) => {
+    request.flash("error", "Logged in");
+    console.log(request);
+    response.redirect("back");
   }
 );
 
