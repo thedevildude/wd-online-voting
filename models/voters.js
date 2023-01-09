@@ -38,6 +38,17 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async updateVoteCasted({ id }) {
+      return await this.update(
+        { vote_casted: true },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    }
   }
   Voters.init(
     {

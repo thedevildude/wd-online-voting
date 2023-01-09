@@ -16,24 +16,25 @@
       <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
     <% } %>
   <% } %>
-  <div class="m-5">
+  <form class="m-5" id="election-form" action="./<%=election.id%>" method="post">
+    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
     <%for(let i = 0; i<question.length; i++){%>
       <div class="flex flex-col justify-start p-5 my-5 text-gray-600 bg-gray-100 drop-shadow-lg">
         <p class="text-2xl font-semibold"><%=i+1%>) <%=question[i].name%></p>
         <p class="text-sm mx-7"><%=question[i].description%></p>
         <div class="flex my-5">
-        <%for(let j = 0; j<options[i].length; j++){%>
+        <%for(let j = 0; j<options[i].length; j++) {%>
           <div class="flex items-center ml-5 pl-4 border-gray-300 border-2 w-60">
-            <input type="radio" name="<%=question[i].name%>" id="<%=options[i][j].id%>" class="w-5 h-5">
+            <input type="radio" name="<%=question[i].id%>" id="<%=options[i][j].id%>" value="<%=options[i][j].id%>" class="w-5 h-5">
             <label for="<%=options[i][j].id%>" class="ml-2 pr-4 py-2 w-full text-lg"><%=options[i][j].option_name%></label>
           </div>
         <%}%>
         </div>
       </div>
     <%}%>
-  </div>
+  </form>
   <div class="flex items-center justify-start m-5">
-    <a href="/vote/election/<%=election.id%>" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Submit</a>
+    <button type="submit" form="election-form" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Submit</button>
   </div>
 </body>
 </html>
