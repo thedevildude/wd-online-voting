@@ -11,7 +11,7 @@ const isAdmin = (request, response, next) => {
   }
 };
 
-const isVoter = (request, response, next) => {
+const isVoter = async (request, response, next) => {
   if (request.isAuthenticated() && request.user instanceof Voters) {
     next();
   } else {

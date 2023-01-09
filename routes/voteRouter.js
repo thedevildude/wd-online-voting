@@ -11,12 +11,18 @@ voteRouter.get(
   validateElectionStatus,
   (request, response) => {
     try {
+      if (request.user.vote_casted === true)
+        request.flash(
+          "error",
+          "You have already responded! Please wait for the resut"
+        );
       response.render("voteElection", {
         title: "Vote Election",
         csrfToken: request.csrfToken(),
         election: request.election,
         question: request.question,
         options: request.options,
+        vote_casted: request.user.vote_casted,
       });
     } catch (error) {
       console.log(error);
@@ -37,6 +43,13 @@ voteRouter.post(
 );
 
 voteRouter.post("/election/:id/", async (request, response) => {
+  if (request.user.vote_casted === true) {
+    request.flash(
+      "error",
+      "You have already responded! Please wait for the resut"
+    );
+    response.redirect("back");
+  }
   const obj = JSON.parse(JSON.stringify(request.body));
   const objKeys = Object.keys(obj);
   const objValues = Object.values(obj);

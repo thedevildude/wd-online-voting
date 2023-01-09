@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static async findVoter(id) {
+      return await this.findByPk(id);
+    }
+
     static async deleteVoter({ voter_id, electionId }) {
       return await this.destroy({
         where: {

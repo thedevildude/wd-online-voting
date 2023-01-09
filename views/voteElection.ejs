@@ -33,8 +33,10 @@
       </div>
     <%}%>
   </form>
+  <%if(!vote_casted){%>
   <div class="flex items-center justify-start m-5">
     <button type="submit" form="election-form" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Submit</button>
   </div>
+  <%}%>
 </body>
 </html>
