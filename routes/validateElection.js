@@ -13,7 +13,7 @@ const validateElection = async (request, response, next) => {
         electionId: election.id,
       });
       if (question.length === 0) {
-        throw new Error("No questions in the Elections");
+        throw new Error("No Questions in the Elections");
       } else {
         const options = [];
         for (let i = 0; i < question.length; i++) {
@@ -22,7 +22,11 @@ const validateElection = async (request, response, next) => {
           });
           if (option.length >= 2) {
             options.push(option);
-          } else throw new Error("Not enough options in question");
+          } else
+            throw new Error(
+              "Please add atleast two options to",
+              question[i].name
+            );
         }
         request.election = election;
         request.question = question;
