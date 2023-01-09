@@ -38,6 +38,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
+
+    static async incrementVote({ questionId, optionId }) {
+      return await this.increment("votes", {
+        where: {
+          questionId,
+          id: optionId,
+        },
+      });
+    }
   }
   Option.init(
     {
