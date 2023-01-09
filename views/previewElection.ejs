@@ -7,6 +7,27 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
   <link rel="stylesheet" href="/css/styles.css">
   <title><%=title%></title>
+  <script>
+    var token = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
+    function startElection(id) { //Here oid is optionId
+      console.log("Launching Election");
+      fetch(`/home/election/${id}/launch-election`, {
+        method: "put",
+        headers: { "Content-type": "application/json", redirect: "follow" },
+        body: JSON.stringify({
+          "_csrf": token,
+        })
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.open(`/home/election/${id}`, "_self");
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  </script>
 </head>
 <body>
   <% const e_title = election.name%>
@@ -33,7 +54,10 @@
     <%}%>
   </div>
   <div class="flex items-center justify-start m-5">
-    <a href="/vote/election/<%=election.id%>" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Submit</a>
+    <a href="/home/election/<%=election.id%>" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Back</a>
+    <%if (!election.electionStatus && !election.electionEnded) {%>
+    <a href="#" onclick="startElection(`<%=election.id%>`)" class="text-xl text-center text-white bg-amber-600 rounded-xl p-2 mr-5 text-center w-60">Launch Election</a>
+    <%}%>
   </div>
 </body>
 </html>

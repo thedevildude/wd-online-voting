@@ -27,6 +27,22 @@
         })
         .catch((err) => console.error(err));
     }
+    function endElection(id) {
+      console.log("Ending Election");
+      fetch(`/home/election/${id}/end-election`, {
+        method: "put",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          "_csrf": token
+        })
+      })
+        .then((res) => {
+          if (res.ok) {
+            window.open(`/home/election/${id}`, "_self")
+          }
+        })
+        .catch((err) => console.error(err));
+    }
   </script>
 </head>
 <body>
@@ -52,7 +68,14 @@
   </div>
   <div class="flex items-center justify-start m-5">
     <a href="/home/election/<%=election.id%>/preview" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-40 text-center">Preview Election</a>
-    <a href="" class="text-xl text-white bg-amber-800 rounded-xl p-2 mr-5 w-40 text-center">Launch Election</a>
+    <%if (!election.electionStatus && !election.electionEnded) {%>
+      <a href="/home/election/<%=election.id%>/launch-election" class="text-xl text-white bg-amber-800 rounded-xl p-2 mr-5 w-40 text-center">Launch Election</a>
+    <%} else if(election.electionStatus && !election.electionEnded){%>
+      <a href="#" onclick="endElection(`<%=election.id%>`)" class="text-xl text-white bg-amber-800 rounded-xl p-2 mr-5 w-40 text-center">End Election</a>
+    <%}%>
+    <%if (election.electionStatus || election.electionEnded) {%>
+      <a href="#" class="text-xl text-white bg-blue-600 rounded-xl p-2 mr-5 w-40 text-center">Preview Result</a>
+    <%}%>
   </div>
 </body>
 </html>

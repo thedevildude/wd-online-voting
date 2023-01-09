@@ -153,7 +153,26 @@ homeRouter.get(
   validateElection,
   async (request, response) => {
     try {
-      response.render("voteElection", {
+      response.render("previewElection", {
+        title: "Vote Election",
+        csrfToken: request.csrfToken(),
+        election: request.election,
+        question: request.question,
+        options: request.options,
+      });
+    } catch (error) {
+      request.flash("error", error.message);
+      response.redirect("/home");
+    }
+  }
+);
+
+homeRouter.get(
+  "/election/:id/launch-election",
+  validateElection,
+  async (request, response) => {
+    try {
+      response.render("previewElection", {
         title: "Vote Election",
         csrfToken: request.csrfToken(),
         election: request.election,
@@ -332,6 +351,34 @@ homeRouter.delete("/election/:id/addvoters", async (request, response) => {
   } catch (error) {
     request.flash("error", error.message);
     return response.status(422).json(error.message);
+  }
+});
+
+homeRouter.put("/election/:id/launch-election", async (request, response) => {
+  try {
+    await Election.startElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    request.flash("error", "Election launched sucessfully");
+    return response.json({ success: true });
+  } catch (error) {
+    request.flash("error", error.message);
+    response.redirect("/home");
+  }
+});
+
+homeRouter.put("/election/:id/end-election", async (request, response) => {
+  try {
+    await Election.endElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    request.flash("error", "Election ended sucessfully");
+    return response.json({ success: true });
+  } catch (error) {
+    request.flash("error", error.message);
+    response.redirect("/home");
   }
 });
 
