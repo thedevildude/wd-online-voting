@@ -71,6 +71,30 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async startElection({ electionId, adminId }) {
+      return await this.update(
+        { electionStatus: true },
+        {
+          where: {
+            id: electionId,
+            adminId,
+          },
+        }
+      );
+    }
+
+    static async endElection({ electionId, adminId }) {
+      return await this.update(
+        { electionEnded: true },
+        {
+          where: {
+            id: electionId,
+            adminId,
+          },
+        }
+      );
+    }
   }
   Election.init(
     {
