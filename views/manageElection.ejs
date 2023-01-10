@@ -7,6 +7,21 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
   <link rel="stylesheet" href="/css/styles.css">
   <title><%=title%></title>
+  <%if (election.electionStatus || election.electionEnded) {%>
+    <script>
+      window.onload = (e) => {
+      const hostName = location.host;
+      const slug = `/vote/election/<%=election.id%>`;
+      document.getElementById("votingLink").value = hostName + slug;
+    }
+    function copyVotingLink() {
+      let votingText = document.getElementById("votingLink");
+      document.getElementById("copyButton").innerText = "Copied!";
+      votingText.select();
+      navigator.clipboard.writeText(votingText.value);
+    }
+    </script>
+  <%}%>
   <script>
     var token = document
       .querySelector('meta[name="csrf-token"]')
@@ -56,7 +71,7 @@
   <div class="flex items-center justify-start m-5">
     <a href="../" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
     <a href="./<%=election.id%>/name" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-40 text-center">Update Election</a>
-    <a href="#" onclick="deleteElection(`<%= election.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Election</a>
+    <a href="" onclick="deleteElection(`<%= election.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Election</a>
   </div>
   <div class="flex items-center justify-between rounded-3xl bg-gray-200 m-5 p-5">
     <p class="text-2xl text-gray-800">You have <%=question.length%> Questions in this Election</p>
@@ -77,5 +92,12 @@
       <a href="/home/election/<%=election.id%>/preview-result" class="text-xl text-white bg-blue-600 rounded-xl p-2 mr-5 w-40 text-center">Preview Result</a>
     <%}%>
   </div>
+  <%if (election.electionStatus || election.electionEnded) {%>
+  <p class="text-2xl text-gray-800 ml-5">Voting Link</p>
+  <div class="flex m-5">
+    <input type="text" id="votingLink" class="px-5 py-2 w-2/5 mr-5 text-xl border border-green-600 rounded-xl" readonly>
+    <button id="copyButton" class="text-xl text-white bg-green-600 rounded-xl p-2 mr-5 w-40 text-center" onclick="copyVotingLink()">Click to Copy</button>
+  </div>
+  <%}%>
 </body>
 </html>

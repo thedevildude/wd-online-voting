@@ -47,9 +47,10 @@
         <div class="flex flex-col my-5 w-9/12">
         <%for(let j = 0; j<options[i].length; j++){%>
           <div class="flex items-center text-center ml-5 mb-5 bg-zinc-200 text-white w-full overflow-hidden rounded-lg">
-            <div class="flex justify-between py-2 text-lg bg-<%=colorArr[Math.floor(Math.random() * 10)]%>-500" style="width: <%=options[i][j].votes/v_voters * 100%>%;">
+            <%let pcent = 0; if(v_voters !== 0) {pcent = options[i][j].votes/v_voters * 100}%>
+            <div class="flex justify-between py-2 text-lg bg-<%=colorArr[Math.floor(Math.random() * 10)]%>-500" style="width: <%=pcent%>%;">
               <p class="px-2"><%=options[i][j].option_name%></p>
-              <p class="pr-2"><%=Math.round(options[i][j].votes/v_voters * 100)%>%</p>
+              <p class="pr-2"><%=Math.round(pcent)%>%</p>
             </div>
           </div>
         <%}%>

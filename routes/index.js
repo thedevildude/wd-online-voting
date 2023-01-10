@@ -177,7 +177,7 @@ homeRouter.get(
 );
 
 electionRouter.get(
-  "/election/:id/launch-election",
+  "/launch-election",
   validateElection,
   async (request, response) => {
     try {
@@ -330,13 +330,14 @@ electionRouter.post("/name", async (request, response) => {
   }
 });
 
-homeRouter.delete("/delete", async (request, response) => {
+homeRouter.delete("/election/:id/delete", async (request, response) => {
   try {
     console.log("Deleting a election by id: ", request.params.id);
     await Election.deleteElection({
-      electionId: parseInt(request.params.id),
+      electionId: request.params.id,
       adminId: request.user.id,
     });
+    request.flash("error", "Election deleted sucessfully");
     return response.json({ success: true });
   } catch (error) {
     return response.status(422).json(error);
