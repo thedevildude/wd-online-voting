@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const homeRouter = require("express").Router({ mergeParams: true });
+const electionRouter = require("express").Router({ mergeParams: true });
 const voteRouter = require("./voteRouter");
 const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
@@ -9,13 +10,19 @@ const { Admin, Election, Question, Option, Voters } = require("../models");
 const { isAdmin } = require("./authMiddleware");
 const { validateElection } = require("./validateElection");
 const { electionStatus } = require("./electionStatus");
+const { noModification } = require("./noModification");
 
 // homeRouter is used for ease of writing APIs
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), isAdmin, homeRouter);
 router.use(
+  "/home/election/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  noModification,
+  electionRouter
+);
+router.use(
   "/home/election/:id/question",
   connectEnsureLogin.ensureLoggedIn(),
-  isAdmin,
   questionRouter
 );
 // voteRouter is used for ballot preview and voters to vote on election
@@ -84,7 +91,7 @@ homeRouter.get("/election/new", (request, response) => {
 });
 
 // Page for managing elections
-homeRouter.get("/election/:id", async (request, response) => {
+electionRouter.get("/", async (request, response) => {
   try {
     const election = await Election.findElection({
       electionId: request.params.id,
@@ -106,12 +113,13 @@ homeRouter.get("/election/:id", async (request, response) => {
       voterLength: voter.length,
     });
   } catch (error) {
-    response.status(401).send({ error: error.message });
+    request.flash("error", error.message);
+    response.redirect("back");
   }
 });
 
 // Page for updating name of election
-homeRouter.get("/election/:id/name", async (request, response) => {
+electionRouter.get("/name", async (request, response) => {
   try {
     const election = await Election.findElection({
       electionId: request.params.id,
@@ -168,7 +176,7 @@ homeRouter.get(
   }
 );
 
-homeRouter.get(
+electionRouter.get(
   "/election/:id/launch-election",
   validateElection,
   async (request, response) => {
@@ -308,7 +316,7 @@ homeRouter.post("/election/new", async (request, response) => {
   }
 });
 
-homeRouter.post("/election/:id/name", async (request, response) => {
+electionRouter.post("/name", async (request, response) => {
   try {
     await Election.updateName({
       name: request.body.name,
@@ -322,7 +330,7 @@ homeRouter.post("/election/:id/name", async (request, response) => {
   }
 });
 
-homeRouter.delete("/election/:id/delete", async (request, response) => {
+homeRouter.delete("/delete", async (request, response) => {
   try {
     console.log("Deleting a election by id: ", request.params.id);
     await Election.deleteElection({
@@ -335,7 +343,7 @@ homeRouter.delete("/election/:id/delete", async (request, response) => {
   }
 });
 
-homeRouter.post("/election/:id/addvoters", async (request, response) => {
+electionRouter.post("/addvoters", async (request, response) => {
   const passwordHash = await hashPassword(request.body.password);
   try {
     await Voters.addVoter({
@@ -352,7 +360,7 @@ homeRouter.post("/election/:id/addvoters", async (request, response) => {
 });
 
 // API Route for deleting voters
-homeRouter.delete("/election/:id/addvoters", async (request, response) => {
+electionRouter.delete("/addvoters", async (request, response) => {
   try {
     const election = await Election.findElection({
       electionId: request.body.electionId,
@@ -371,7 +379,7 @@ homeRouter.delete("/election/:id/addvoters", async (request, response) => {
   }
 });
 
-homeRouter.put("/election/:id/launch-election", async (request, response) => {
+electionRouter.put("/launch-election", async (request, response) => {
   try {
     await Election.startElection({
       electionId: request.params.id,
