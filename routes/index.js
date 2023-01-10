@@ -8,6 +8,7 @@ const { hashPassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question, Option, Voters } = require("../models");
 const { isAdmin } = require("./authMiddleware");
 const { validateElection } = require("./validateElection");
+const { electionStatus } = require("./electionStatus");
 
 // homeRouter is used for ease of writing APIs
 router.use("/home", connectEnsureLogin.ensureLoggedIn(), isAdmin, homeRouter);
@@ -183,6 +184,21 @@ homeRouter.get(
       request.flash("error", error.message);
       response.redirect("/home");
     }
+  }
+);
+
+homeRouter.get(
+  "/election/:id/preview-result",
+  electionStatus,
+  async (request, response) => {
+    response.render("electionResult", {
+      title: "Results",
+      csrfToken: request.csrfToken(),
+      election: request.election,
+      question: request.question,
+      options: request.options,
+      voters: request.voters,
+    });
   }
 );
 

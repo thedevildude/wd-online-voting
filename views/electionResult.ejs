@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%=title%></title>
+</head>
+<body>
+  <% const e_title = election.name%>
+  <%- include("header", {text: e_title, signOutVis: true })%>
+  <% if(messages && messages.error && messages.error.length > 0)  { %>
+    <% for(var i = 0; i < messages.error.length; i++) { %>
+      <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
+    <% } %>
+  <% } %>
+  <div class="m-5">
+    <div class="flex">
+      <div class="pr-5 mr-5 flex bg-gray-100 items-center text-gray-600 drop-shadow-lg">
+        <div class="p-4 font-semibold text-5xl">
+          <p class="pr-2 border-r-4"><%=voters.length%></p>
+        </div>
+        <div class="flex flex-col">
+          <p class="text-2xl font-semibold">Total Voters</p>
+          <p class="text-gray-500">Registered</p>
+        </div>
+      </div>
+      <div class="pr-5 mr-5 flex bg-gray-100 items-center text-gray-600 drop-shadow-lg">
+        <div class="p-4 font-semibold text-5xl">
+          <%const v_voters = voters.filter(voter => {if (voter.vote_casted == true) return true; return false;}).length%>
+          <p class="pr-2 border-r-4"><%=v_voters%></p>
+        </div>
+        <div class="flex flex-col">
+          <p class="text-2xl font-semibold">Total Voters</p>
+          <p class="text-gray-500">Voted</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-red-500 bg-orange-500 bg-amber-500 bg-blue-500 bg-pink-500 bg-rose-500 bg-violet-500 bg-lime-500 bg-indigo-500 bg-emerald-500"></div>
+    <%const colorArr = ["red", "orange", "amber", "blue", "pink", "rose", "violet", "lime", "indigo", "emerald"];%>
+    <%for(let i = 0; i<question.length; i++){%>
+      <div class="flex flex-col justify-start p-5 my-5 text-gray-600 bg-gray-100 drop-shadow-lg">
+        <p class="text-2xl font-semibold"><%=i+1%>) <%=question[i].name%></p>
+        <p class="text-sm mx-7"><%=question[i].description%></p>
+        <div class="flex flex-col my-5 w-9/12">
+        <%for(let j = 0; j<options[i].length; j++){%>
+          <div class="flex items-center text-center ml-5 mb-5 bg-zinc-200 text-white w-full overflow-hidden rounded-lg">
+            <div class="flex justify-between py-2 text-lg bg-<%=colorArr[Math.floor(Math.random() * 10)]%>-500" style="width: <%=options[i][j].votes/v_voters * 100%>%;">
+              <p class="px-2"><%=options[i][j].option_name%></p>
+              <p class="pr-2"><%=Math.round(options[i][j].votes/v_voters * 100)%>%</p>
+            </div>
+          </div>
+        <%}%>
+        </div>
+      </div>
+    <%}%>
+  </div>
+  <div class="flex items-center justify-start m-5">
+    <a href="/home/election/<%=election.id%>" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 text-center w-40">Back</a>
+  </div>
+</body>
+</html>
