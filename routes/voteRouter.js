@@ -9,21 +9,36 @@ voteRouter.get(
   "/election/:id",
   isVoter,
   validateElectionStatus,
-  (request, response) => {
+  async (request, response) => {
     try {
-      if (request.user.vote_casted === true)
-        request.flash(
-          "error",
-          "You have already responded! Please wait for the resut"
-        );
-      response.render("voteElection", {
-        title: "Vote Election",
-        csrfToken: request.csrfToken(),
-        election: request.election,
-        question: request.question,
-        options: request.options,
-        vote_casted: request.user.vote_casted,
-      });
+      if (!request.status) {
+        const voters = await Voters.findAllVoters({
+          electionId: request.election.id,
+        });
+        response.render("electionResult", {
+          title: "Results",
+          csrfToken: request.csrfToken(),
+          election: request.election,
+          question: request.question,
+          options: request.options,
+          voters,
+          admin: false,
+        });
+      } else {
+        if (request.user.vote_casted === true)
+          request.flash(
+            "error",
+            "You have already responded! Please wait for the resut"
+          );
+        response.render("voteElection", {
+          title: "Vote Election",
+          csrfToken: request.csrfToken(),
+          election: request.election,
+          question: request.question,
+          options: request.options,
+          vote_casted: request.user.vote_casted,
+        });
+      }
     } catch (error) {
       console.log(error);
       response.redirect("/home");

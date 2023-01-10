@@ -198,6 +198,7 @@ homeRouter.get(
       question: request.question,
       options: request.options,
       voters: request.voters,
+      admin: true,
     });
   }
 );

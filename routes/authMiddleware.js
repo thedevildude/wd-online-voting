@@ -1,4 +1,4 @@
-const { Admin, Voters } = require("../models");
+const { Admin, Voters, Election } = require("../models");
 
 const isAdmin = (request, response, next) => {
   if (request.isAuthenticated()) {
@@ -12,14 +12,27 @@ const isAdmin = (request, response, next) => {
 };
 
 const isVoter = async (request, response, next) => {
-  if (request.isAuthenticated() && request.user instanceof Voters) {
+  const election = await Election.findByPk(request.params.id);
+  if (election.electionStatus == true && election.electionEnded == true) {
     next();
   } else {
-    response.render("voterLogin", {
-      csrfToken: request.csrfToken(),
-      title: "Voter Login",
-      electionId: request.params.id,
-    });
+    if (request.isAuthenticated() && request.user instanceof Voters) {
+      const voter = await Voters.findVoter(request.user.id);
+      if (voter.eligible_electionId != request.params.id) {
+        request.flash("error", "You are not eligible for this election");
+        response.render("voterLogin", {
+          csrfToken: request.csrfToken(),
+          title: "Voter Login",
+          electionId: request.params.id,
+        });
+      } else next();
+    } else {
+      response.render("voterLogin", {
+        csrfToken: request.csrfToken(),
+        title: "Voter Login",
+        electionId: request.params.id,
+      });
+    }
   }
 };
 

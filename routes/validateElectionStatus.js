@@ -16,6 +16,7 @@ const validateElectionStatus = async (request, response, next) => {
     request.election = election;
     request.question = question;
     request.options = options;
+    request.status = true;
     next();
   } else if (
     election.electionStatus == false &&
@@ -28,7 +29,11 @@ const validateElectionStatus = async (request, response, next) => {
     election.electionEnded == true
   ) {
     request.flash("error", "Election has closed");
-    response.redirect("/");
+    request.election = election;
+    request.question = question;
+    request.options = options;
+    request.status = false;
+    next();
   }
 };
 

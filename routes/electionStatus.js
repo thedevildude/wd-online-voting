@@ -2,7 +2,13 @@ const { Election, Question, Option, Voters } = require("../models");
 
 const electionStatus = async (request, response, next) => {
   try {
-    const election = await Election.findByPk(request.params.id);
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
+    if (election == null) {
+      throw new Error("Not authorized");
+    }
     const question = await Question.findAllQuestions({
       electionId: election.id,
     });
@@ -25,7 +31,7 @@ const electionStatus = async (request, response, next) => {
     }
   } catch (error) {
     request.flash("error", error.message);
-    response.redirect("back");
+    response.redirect("/home");
   }
 };
 
