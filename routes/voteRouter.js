@@ -5,6 +5,16 @@ const { validateElectionStatus } = require("./validateElectionStatus");
 // eslint-disable-next-line no-unused-vars
 const { Option, Question, Voters } = require("../models");
 
+voteRouter.get("/election/:id/signout", (request, response, next) => {
+  request.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    request.flash("success", "Logged Out Successfully");
+    response.redirect(`back`);
+  });
+});
+
 voteRouter.get(
   "/election/:id",
   isVoter,

@@ -18,6 +18,11 @@
       <p class="bg-red-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
     <% } %>
   <% } %>
+  <% if(messages && messages.success && messages.success.length > 0)  { %>
+    <% for(var i = 0; i < messages.success.length; i++) { %>
+      <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.success[i] %></p>
+    <% } %>
+  <% } %>
   <div class="flex items-center justify-start m-5">
     <a href="" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
   </div>
