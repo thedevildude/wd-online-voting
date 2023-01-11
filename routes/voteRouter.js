@@ -28,8 +28,9 @@ voteRouter.get(
         if (request.user.vote_casted === true)
           request.flash(
             "error",
-            "You have already responded! Please wait for the resut"
+            "You have already responded! Please wait for the result"
           );
+        response.locals.messages = request.flash();
         response.render("voteElection", {
           title: "Vote Election",
           csrfToken: request.csrfToken(),
