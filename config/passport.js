@@ -78,7 +78,7 @@ passport.serializeUser((user, done) => {
     console.log("Serializing admin in session: ", user.id);
     done(null, { id: user.id, type: "Admin" });
   } else if (user instanceof Voters) {
-    console.log("Serializing voter in session: ", user.id);
+    console.log("Serializing voter in session: ", user.voter_id);
     done(null, { id: user.id, type: "Voter" });
   }
 });

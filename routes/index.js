@@ -58,7 +58,23 @@ router.get("/login", (request, response) => {
   });
 });
 
-// Sign Out ot Log out route
+// Helping link to delete all elections and associated data
+router.get("/reset", async (request, response) => {
+  try {
+    console.log("hello");
+    await Election.destroy({
+      where: {},
+      truncate: false,
+    });
+    request.flash("error", "All Elections cleared");
+    response.redirect("/");
+  } catch (error) {
+    request.flash("error", error.message);
+    response.redirect("/");
+  }
+});
+
+// Sign Out or Log out route
 router.get("/signout", (request, response, next) => {
   request.logout((err) => {
     if (err) {

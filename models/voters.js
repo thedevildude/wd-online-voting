@@ -74,7 +74,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      voterResponse: DataTypes.JSONB,
+      voterResponse: {
+        type: DataTypes.JSONB,
+      },
     },
     {
       sequelize,

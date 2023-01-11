@@ -3,7 +3,7 @@ const passport = require("passport");
 const { isVoter } = require("./authMiddleware");
 const { validateElectionStatus } = require("./validateElectionStatus");
 // eslint-disable-next-line no-unused-vars
-const { Option, Question, Voters } = require("../models");
+const { Option, Voters } = require("../models");
 
 voteRouter.get("/election/:id/signout", (request, response, next) => {
   request.logout((err) => {
@@ -41,6 +41,8 @@ voteRouter.get(
             "You have responded! Please wait for the result"
           );
         response.locals.messages = request.flash();
+        const objKeys = Object.keys(request.user.voterResponse);
+        const objValues = Object.values(request.user.voterResponse);
         response.render("voteElection", {
           title: "Vote Election",
           csrfToken: request.csrfToken(),
@@ -48,11 +50,13 @@ voteRouter.get(
           question: request.question,
           options: request.options,
           vote_casted: request.user.vote_casted,
+          objKeys,
+          objValues,
         });
       }
     } catch (error) {
       console.log(error);
-      response.redirect("/home");
+      response.redirect("/vote/election");
     }
   }
 );
