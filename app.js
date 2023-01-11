@@ -40,7 +40,7 @@ app.use(
   })
 );
 // Run once to create session store table
-sessionStore.sync();
+sessionStore.sync({ alter: true });
 
 // Middleware to remove the trailing "/" from a route
 app.use((request, response, next) => {
