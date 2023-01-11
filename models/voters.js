@@ -53,6 +53,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
+    static async addVoterResponse(voterResponse, id) {
+      return await this.update(
+        { voterResponse },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+    }
   }
   Voters.init(
     {
@@ -63,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      voterResponse: DataTypes.JSONB,
     },
     {
       sequelize,

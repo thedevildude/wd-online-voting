@@ -28,7 +28,7 @@ voteRouter.get(
         if (request.user.vote_casted === true)
           request.flash(
             "error",
-            "You have already responded! Please wait for the result"
+            "You have responded! Please wait for the result"
           );
         response.locals.messages = request.flash();
         response.render("voteElection", {
@@ -58,15 +58,13 @@ voteRouter.post(
   }
 );
 
-voteRouter.post("/election/:id/", async (request, response) => {
+voteRouter.post("/election/:id/", isVoter, async (request, response) => {
   if (request.user.vote_casted === true) {
-    request.flash(
-      "error",
-      "You have already responded! Please wait for the resut"
-    );
+    request.flash("error", "You have responded! Please wait for the result");
     response.redirect("back");
   }
   const obj = JSON.parse(JSON.stringify(request.body));
+  await Voters.addVoterResponse(obj, request.user.id);
   const objKeys = Object.keys(obj);
   const objValues = Object.values(obj);
   for (let i = 0; i < objKeys.length; i++) {
