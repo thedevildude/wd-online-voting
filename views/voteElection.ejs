@@ -30,9 +30,8 @@
         <div class="flex my-5">
         <%for(let j = 0; j<options[i].length; j++) {%>
           <%if(vote_casted){%>
-            <%let res = objKeys.findIndex(key => {if(parseInt(key) === question[i].id) {return true;} else false})%>
-            <%var res2 = "";%>
-            <%if(options[i][j].id === parseInt(objValues[res])) {res2 = options[i][j].option_name}%>
+            <%let res;%>
+            <%if(options[i][j].id === parseInt(objValues[i])) {res2 = options[i][j].option_name}%>
           <%}%>
           <div class="flex items-center ml-5 pl-4 border-gray-300 border-2 w-60">
             <input type="radio" name="<%=question[i].id%>" id="<%=options[i][j].id%>" value="<%=options[i][j].id%>" class="w-5 h-5">
@@ -41,7 +40,10 @@
         <%}%>
       </div>
       <%if(vote_casted){%>
-        <p>Your Choice: <%=res2%></p>
+        <div>
+          <span class="text-gray-600 font-semibold">Your Choice:</span>
+          <span><%=res2%></span>
+        </div>
       <%}%>
       </div>
     <%}%>
