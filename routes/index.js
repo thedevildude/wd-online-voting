@@ -61,7 +61,6 @@ router.get("/login", (request, response) => {
 // Helping link to delete all elections and associated data
 router.get("/reset", async (request, response) => {
   try {
-    console.log("hello");
     await Election.destroy({
       where: {},
       truncate: false,
@@ -223,6 +222,7 @@ homeRouter.get(
       options: request.options,
       voters: request.voters,
       admin: true,
+      voter: false,
     });
   }
 );

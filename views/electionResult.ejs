@@ -9,8 +9,24 @@
   <title><%=title%></title>
 </head>
 <body>
-  <% const e_title = election.name%>
-  <%- include("header", {text: e_title, signOutVis: admin })%>
+  <div class="flex justify-between items-center bg-blue-500">
+    <p class="text-3xl ml-5 font-medium text-white"><%=election.name%></p>
+    <div class="flex items-center">
+      <%if(voter){%>
+        <%if(voterSignIn){%>
+          <a href="<%=election.id%>/voter-login" class="text-2xl my-4 mr-5 text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Sign In</a>
+        <%}%>
+        <%if(voterSignOut){%>
+          <a href="<%=election.id%>/signout" class="text-2xl my-4 mr-5 text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Signout</a>
+          <img class="rounded-full my-2 mx-5" src="https://via.placeholder.com/70" alt="user image">
+        <%}%>
+      <%}%>
+      <%if(admin){%>
+      <a href="<%=election.id%>/signout" class="text-2xl text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Signout</a>
+      <img class="rounded-full my-2 mx-5" src="https://via.placeholder.com/70" alt="user image">
+      <%}%>
+    </div>
+  </div>
   <% if(messages && messages.error && messages.error.length > 0)  { %>
     <% for(var i = 0; i < messages.error.length; i++) { %>
       <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
@@ -45,13 +61,23 @@
         <p class="text-2xl font-semibold"><%=i+1%>) <%=question[i].name%></p>
         <p class="text-sm mx-7"><%=question[i].description%></p>
         <div class="flex flex-col my-5 w-9/12">
+        <%let res2;%>
         <%for(let j = 0; j<options[i].length; j++){%>
+          <%if(vote_casted){%>
+            <%if(options[i][j].id === parseInt(objValues[i])) {res2 = options[i][j].option_name}%>
+          <%}%>
           <div class="flex items-center text-center ml-5 mb-5 bg-zinc-200 text-white w-full overflow-hidden rounded-lg">
             <%let pcent = 0; if(v_voters !== 0) {pcent = options[i][j].votes/v_voters * 100}%>
             <div class="flex justify-between py-2 text-lg bg-<%=colorArr[Math.floor(Math.random() * 10)]%>-500" style="width: <%=pcent%>%;">
               <p class="px-2"><%=options[i][j].option_name%></p>
               <p class="pr-2"><%=Math.round(pcent)%>%</p>
             </div>
+          </div>
+        <%}%>
+        <%if(vote_casted){%>
+          <div>
+            <span class="text-gray-600 font-semibold">Your Choice:</span>
+            <span><%=res2%></span>
           </div>
         <%}%>
         </div>

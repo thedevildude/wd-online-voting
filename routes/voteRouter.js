@@ -33,6 +33,12 @@ voteRouter.get(
           options: request.options,
           voters,
           admin: false,
+          voter: true,
+          voterSignIn: request.voterSignIn,
+          voterSignOut: request.voterSignOut,
+          vote_casted: request.vote_casted,
+          objKeys: request.objKeys,
+          objValues: request.objValues,
         });
       } else {
         if (request.user.vote_casted === true)
@@ -56,10 +62,19 @@ voteRouter.get(
       }
     } catch (error) {
       console.log(error);
-      response.redirect("/vote/election");
+      request.flash("error", error.messages);
+      response.redirect("/login");
     }
   }
 );
+
+voteRouter.get("/election/:id/voter-login", async (request, response) => {
+  response.render("voterLogin", {
+    csrfToken: request.csrfToken(),
+    title: "Voter Login",
+    electionId: request.params.id,
+  });
+});
 
 voteRouter.post(
   "/election/:id/voter-login",
@@ -68,7 +83,11 @@ voteRouter.post(
     failureFlash: true,
   }),
   (request, response) => {
-    response.redirect(`back`);
+    if (request.originalUrl == "/vote/election/40/voter-login") {
+      response.redirect(`./`);
+    } else {
+      response.redirect("back");
+    }
   }
 );
 
