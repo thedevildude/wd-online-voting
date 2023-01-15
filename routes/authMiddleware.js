@@ -56,6 +56,7 @@ const isVoter = async (request, response, next) => {
           csrfToken: request.csrfToken(),
           title: "Voter Login",
           electionId: request.params.id,
+          electionEndedLink: false,
         });
       }
     }

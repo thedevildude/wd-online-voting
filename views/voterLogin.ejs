@@ -26,7 +26,11 @@
   <div class="flex items-center justify-start m-5">
     <a href="" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
   </div>
+  <%if(electionEndedLink){%>
   <form class="flex flex-col m-5" action="../<%=electionId%>/voter-login" method="post">
+  <%} else{%>
+  <form class="flex flex-col m-5" action="./<%=electionId%>/voter-login" method="post">
+  <%}%>
     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
     <label class="text-xl text-gray-800 my-2" for="voter_id">Voter ID</label>
     <input class="border border-green-600 rounded-xl p-5 my-2 text-3xl" placeholder="voterid2345" type="text"

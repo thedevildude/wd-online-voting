@@ -3,7 +3,7 @@ const passport = require("passport");
 const { isVoter } = require("./authMiddleware");
 const { validateElectionStatus } = require("./validateElectionStatus");
 // eslint-disable-next-line no-unused-vars
-const { Option, Voters } = require("../models");
+const { Option, Voters, Question } = require("../models");
 
 voteRouter.get("/election/:id/signout", (request, response, next) => {
   request.logout((err) => {
@@ -73,6 +73,7 @@ voteRouter.get("/election/:id/voter-login", async (request, response) => {
     csrfToken: request.csrfToken(),
     title: "Voter Login",
     electionId: request.params.id,
+    electionEndedLink: true,
   });
 });
 
@@ -95,23 +96,32 @@ voteRouter.post("/election/:id/", isVoter, async (request, response) => {
   if (request.user.vote_casted === true) {
     request.flash("error", "You have responded! Please wait for the result");
     response.redirect("back");
-  }
-  const obj = JSON.parse(JSON.stringify(request.body));
-  await Voters.addVoterResponse(obj, request.user.id);
-  const objKeys = Object.keys(obj);
-  const objValues = Object.values(obj);
-  for (let i = 0; i < objKeys.length; i++) {
-    if (objKeys[i] == "_csrf") continue;
-    await Option.incrementVote({
-      questionId: parseInt(objKeys[i]),
-      optionId: parseInt(objValues[i]),
+  } else {
+    const obj = JSON.parse(JSON.stringify(request.body));
+    const objKeys = Object.keys(obj);
+    const objValues = Object.values(obj);
+    const questions = await Question.findAllQuestions({
+      electionId: request.params.id,
     });
+    if (objKeys.length != questions.length + 1) {
+      request.flash("error", "Please select all the options");
+      response.redirect("back");
+    } else {
+      await Voters.addVoterResponse(obj, request.user.id);
+      for (let i = 0; i < objKeys.length; i++) {
+        if (objKeys[i] == "_csrf") continue;
+        await Option.incrementVote({
+          questionId: parseInt(objKeys[i]),
+          optionId: parseInt(objValues[i]),
+        });
+      }
+      await Voters.updateVoteCasted({
+        id: request.user.id,
+      });
+      request.flash("error", "Vote Casted");
+      response.redirect("back");
+    }
   }
-  await Voters.updateVoteCasted({
-    id: request.user.id,
-  });
-  request.flash("error", "Vote Casted");
-  response.redirect("back");
 });
 
 module.exports = voteRouter;
