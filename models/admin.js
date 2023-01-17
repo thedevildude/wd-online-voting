@@ -33,6 +33,14 @@ module.exports = (sequelize, DataTypes) => {
         passwordHash: newPasswordHash,
       });
     }
+
+    async updateUser({ firstName, lastName, email }) {
+      return await this.update({
+        firstName,
+        lastName,
+        email,
+      });
+    }
   }
   Admin.init(
     {

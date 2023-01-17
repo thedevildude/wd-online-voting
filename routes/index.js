@@ -344,6 +344,24 @@ homeRouter.post("/user/settings/change-password", async (request, response) => {
   }
 });
 
+// Request for updating user details
+homeRouter.post("/user/settings/update-details", async (request, response) => {
+  try {
+    const admin = await Admin.findAdmin(request.user.id);
+    const up = await admin.updateUser({
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      email: request.body.email,
+    });
+    console.log(up);
+    request.flash("success", "Details Updated Successfully");
+    response.redirect("back");
+  } catch (error) {
+    request.flash("error", error.message);
+    response.redirect("back");
+  }
+});
+
 homeRouter.post("/election/new", async (request, response) => {
   console.log("Creating a new election");
   try {

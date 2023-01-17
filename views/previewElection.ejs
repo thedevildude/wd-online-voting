@@ -31,7 +31,7 @@
 </head>
 <body>
   <% const e_title = election.name%>
-  <%- include("header", {text: e_title, signOutVis: false })%>
+  <%- include("header", {text: e_title, signOutVis: true })%>
   <% if(messages && messages.error && messages.error.length > 0)  { %>
     <% for(var i = 0; i < messages.error.length; i++) { %>
       <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
