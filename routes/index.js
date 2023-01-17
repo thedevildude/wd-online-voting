@@ -348,12 +348,11 @@ homeRouter.post("/user/settings/change-password", async (request, response) => {
 homeRouter.post("/user/settings/update-details", async (request, response) => {
   try {
     const admin = await Admin.findAdmin(request.user.id);
-    const up = await admin.updateUser({
+    await admin.updateUser({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
     });
-    console.log(up);
     request.flash("success", "Details Updated Successfully");
     response.redirect("back");
   } catch (error) {
@@ -369,9 +368,11 @@ homeRouter.post("/election/new", async (request, response) => {
       name: request.body.name,
       adminId: request.user.id,
     });
+    request.flash("error", "New election created");
     return response.redirect(`/home/election/${election.id}`);
   } catch (error) {
-    console.log(error);
+    request.flash("error", error.message);
+    return response.redirect("back");
   }
 });
 
