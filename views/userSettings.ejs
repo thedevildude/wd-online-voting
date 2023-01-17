@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%=title%></title>
+</head>
+<body>
+  <%- include("header", {text: title, signOutVis: true })%>
+  <% if(messages && messages.error && messages.error.length > 0)  { %>
+    <% for(var i = 0; i < messages.error.length; i++) { %>
+      <p class="bg-red-400 m-5 rounded px-4 py-2"><%= messages.error[i] %></p>
+    <% } %>
+  <% } %>
+  <% if(messages && messages.success && messages.success.length > 0)  { %>
+    <% for(var i = 0; i < messages.success.length; i++) { %>
+      <p class="bg-green-400 m-5 rounded px-4 py-2"><%= messages.success[i] %></p>
+    <% } %>
+  <% } %>
+  <div class="flex items-center justify-start m-5">
+    <a href="../" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
+  </div>
+  <div class="grid grid-cols-2 m-5 gap-5">
+    <form action="./settings/update-details" method="post">
+    <div class="flex flex-col gap-5">
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <div class="flex justify-between gap-5">
+        <div class="flex flex-col text-gray-800 w-full">
+          <label class="text-2xl" for="firstName">First Name</label>
+          <input class="border border-green-600 rounded p-2 text-2xl" type="text" name="firstName" value="<%=user.firstName%>">
+        </div>
+        <div class="flex flex-col text-gray-800 w-full">
+          <label class="text-2xl" for="lastName">Last Name</label>
+          <input class="border border-green-600 rounded p-2 text-2xl" type="text" name="lastName" value="<%=user.lastName%>">
+        </div>
+      </div>
+      <div class="flex flex-col text-gray-800">
+        <label class="text-2xl" for="email">E-Mail</label>
+        <input class="border border-green-600 rounded p-2 text-2xl" type="email" name="email" value="<%=user.email%>">
+      </div>
+      <div>
+        <button class="text-xl text-white bg-blue-800 rounded-xl p-2 w-40 text-cente" type="submit">Update</button>
+      </div>
+    </div>
+  </form>
+  <form action="./settings/change-password" method="post">
+    <div class="flex flex-col gap-5 border-l-4 border-gray-300 pl-5">
+      <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+      <div class="flex flex-col text-gray-800">
+        <label class="text-2xl" for="currentPassword">Current Password</label>
+        <input class="border border-green-600 rounded p-2 text-2xl" type="password" name="currentPassword">
+      </div>
+      <div class="flex flex-col text-gray-800">
+        <label class="text-2xl" for="newPassword">New Password</label>
+        <input class="border border-green-600 rounded p-2 text-2xl" type="password" name="newPassword">
+      </div>
+      <div>
+        <button class="text-xl text-white bg-blue-800 rounded-xl p-2 text-center" type="submit">Change Password</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</body>
+</html>

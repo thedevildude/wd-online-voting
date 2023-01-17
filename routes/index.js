@@ -5,7 +5,7 @@ const voteRouter = require("./voteRouter");
 const questionRouter = require("express").Router({ mergeParams: true });
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
-const { hashPassword } = require("../lib/passwordUtils");
+const { hashPassword, validatePassword } = require("../lib/passwordUtils");
 const { Admin, Election, Question, Option, Voters } = require("../models");
 const { isAdmin } = require("./authMiddleware");
 const { validateElection } = require("./validateElection");
@@ -94,6 +94,15 @@ homeRouter.get("/", async (request, response) => {
     election: election,
     user: request.user.firstName,
     csrfToken: request.csrfToken(),
+  });
+});
+
+// Page for managing user detail
+homeRouter.get("/user/settings", async (request, response) => {
+  response.render("userSettings", {
+    csrfToken: request.csrfToken(),
+    title: "User Settings",
+    user: request.user,
   });
 });
 
@@ -316,6 +325,22 @@ questionRouter.get("/:qid/description", async (request, response) => {
     });
   } catch (error) {
     response.status(401).send({ error: error.message });
+  }
+});
+
+// Request for updating user password
+homeRouter.post("/user/settings/change-password", async (request, response) => {
+  const admin = await Admin.findAdmin(request.user.id);
+  if (
+    await validatePassword(request.body.currentPassword, admin.passwordHash)
+  ) {
+    const newPasswordHash = await hashPassword(request.body.newPassword);
+    await admin.updatePassword(newPasswordHash);
+    request.flash("success", "Password Changed Successfully");
+    response.redirect("back");
+  } else {
+    request.flash("error", "Current Password Incorrect");
+    response.redirect("back");
   }
 });
 

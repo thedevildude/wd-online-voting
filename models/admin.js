@@ -23,6 +23,16 @@ module.exports = (sequelize, DataTypes) => {
         passwordHash,
       });
     }
+
+    static async findAdmin(id) {
+      return await this.findByPk(id);
+    }
+
+    async updatePassword(newPasswordHash) {
+      return await this.update({
+        passwordHash: newPasswordHash,
+      });
+    }
   }
   Admin.init(
     {
