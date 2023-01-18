@@ -65,6 +65,10 @@ router.get("/reset", async (request, response) => {
       where: {},
       truncate: false,
     });
+    await Voters.destroy({
+      where: {},
+      truncate: false,
+    });
     request.flash("error", "All Elections cleared");
     response.redirect("/");
   } catch (error) {
