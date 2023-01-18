@@ -47,8 +47,15 @@ voteRouter.get(
             "You have responded! Please wait for the result"
           );
         response.locals.messages = request.flash();
-        const objKeys = Object.keys(request.user.voterResponse);
-        const objValues = Object.values(request.user.voterResponse);
+        let objKeys = {};
+        let objValues = {};
+        if (
+          request.user.voterResponse != null ||
+          request.user.voterResponse != undefined
+        ) {
+          objKeys = Object.keys(request.user.voterResponse);
+          objValues = Object.values(request.user.voterResponse);
+        }
         response.render("voteElection", {
           title: "Vote Election",
           csrfToken: request.csrfToken(),
