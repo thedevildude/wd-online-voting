@@ -84,7 +84,9 @@ voteRouter.post(
     failureFlash: true,
   }),
   (request, response) => {
-    if (request.originalUrl == "/vote/election/40/voter-login") {
+    if (
+      request.originalUrl == `/vote/election/${request.params.id}/voter-login`
+    ) {
       response.redirect(`./`);
     } else {
       response.redirect("back");
