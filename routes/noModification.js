@@ -4,8 +4,7 @@ const noModification = async (request, response, next) => {
   try {
     if (
       request.originalUrl == "/home" ||
-      request.originalUrl == `/home/election/${request.params.id}` ||
-      request.originalUrl == `/home/election/${request.params.id}/question`
+      request.originalUrl == `/home/election/${request.params.id}`
     ) {
       next();
     } else if (request.params.id != undefined) {

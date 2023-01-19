@@ -253,7 +253,7 @@ questionRouter.get("/new", async (request, response) => {
   });
 });
 
-questionRouter.get("/", async (request, response) => {
+homeRouter.get("/election/:id/question", async (request, response) => {
   try {
     const question = await Question.findAllQuestions({
       electionId: request.params.id,
@@ -269,11 +269,12 @@ questionRouter.get("/", async (request, response) => {
       name: election.name,
     });
   } catch (error) {
-    return response.json({ error: error.message });
+    request.flash("error", error.message);
+    return response.redirect("back");
   }
 });
 
-questionRouter.get("/:qid", async (request, response) => {
+homeRouter.get("/election/:id/question/:qid", async (request, response) => {
   try {
     const question = await Question.findQuestion({
       electionId: request.params.id,
