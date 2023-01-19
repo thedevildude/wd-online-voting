@@ -241,17 +241,26 @@ homeRouter.get(
 );
 
 // Page for adding a new question to election
-questionRouter.get("/new", async (request, response) => {
-  const election = await Election.findElection({
-    electionId: request.params.id,
-    adminId: request.user.id,
-  });
-  return response.render("addQuestion", {
-    title: "Add New Question",
-    election,
-    csrfToken: request.csrfToken(),
-  });
-});
+homeRouter.get(
+  "/election/:id/question/new",
+  noModification,
+  async (request, response) => {
+    try {
+      const election = await Election.findElection({
+        electionId: request.params.id,
+        adminId: request.user.id,
+      });
+      return response.render("addQuestion", {
+        title: "Add New Question",
+        election,
+        csrfToken: request.csrfToken(),
+      });
+    } catch (error) {
+      request.flash("error", error.message);
+      response.redirect("back");
+    }
+  }
+);
 
 homeRouter.get("/election/:id/question", async (request, response) => {
   try {
