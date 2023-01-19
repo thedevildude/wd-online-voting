@@ -13,12 +13,12 @@
     <p class="text-3xl ml-5 font-medium text-white"><%=election.name%></p>
     <div class="flex items-center">
       <%if(voter){%>
+        <a href="/login" class="text-2xl my-4 mr-5 text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Admin Login</a>
         <%if(voterSignIn){%>
           <a href="<%=election.id%>/voter-login" class="text-2xl my-4 mr-5 text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Sign In</a>
         <%}%>
         <%if(voterSignOut){%>
           <a href="<%=election.id%>/signout" class="text-2xl my-4 mr-5 text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Signout</a>
-          <img class="rounded-full my-2 mx-5" src="https://via.placeholder.com/70" alt="user image">
       <%}}%>
       <%if(admin){%>
       <a href="/signout" class="text-2xl text-white bg-blue-900 rounded-xl p-2 w-56 text-center">Signout</a>
