@@ -21,9 +21,9 @@
         })
       })
         .then((res) => {
-          if (res.ok) {
-            window.open(`/home/election/${id}/question`, "_self");
-          }
+            if(res.ok) {
+              window.open(`/home/election/${id}/question`, "_self");
+            }
         })
         .catch((err) => console.error(err));
     }
@@ -37,11 +37,6 @@
           oid,
         })
       })
-        .then((res) => {
-          if (res.ok) {
-            window.open(`/home/election/${id}/question/${qid}`, "_self");
-          }
-        })
         .catch((err) => console.error(err));
     }
   </script>
@@ -58,7 +53,7 @@
     <a href="./" class="text-xl text-white bg-blue-800 rounded-xl p-2 mr-5 w-40 text-center">Back</a>
     <a href="./<%=question.id%>/name" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-50 text-center">Change Question</a>
     <a href="./<%=question.id%>/description" class="text-xl text-white bg-amber-600 rounded-xl p-2 mr-5 w-60 text-center">Update Description</a>
-    <a href="#" onclick="deleteQuestion(`<%=id%>`,`<%= question.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Question</a>
+    <a href="" onclick="deleteQuestion(`<%=id%>`,`<%= question.id%>`)" class="text-xl text-white bg-red-600 rounded-xl p-2 mr-5 w-40 text-center">Delete Question</a>
   </div>
   <p class="text-2xl text-gray-800 ml-5">Description</p>
   <div class="border bg-gray-200 m-5">

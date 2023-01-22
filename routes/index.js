@@ -147,7 +147,7 @@ electionRouter.get("/", async (request, response) => {
     });
   } catch (error) {
     request.flash("error", error.message);
-    response.redirect("back");
+    response.redirect("/home");
   }
 });
 
@@ -309,7 +309,8 @@ homeRouter.get("/election/:id/question/:qid", async (request, response) => {
       id: election.id,
     });
   } catch (error) {
-    return response.json({ error: error.message });
+    request.flash("error", error.message);
+    return response.redirect(`/home/election/${request.params.id}/question`);
   }
 });
 
@@ -543,7 +544,8 @@ questionRouter.delete("/:qid/delete", async (request, response) => {
     request.flash("error", "Question deleted sucessfully");
     return response.json({ success: true });
   } catch (error) {
-    return response.status(422).json(error.message);
+    request.flash("error", error.message);
+    return response.redirect(303, "back");
   }
 });
 

@@ -2,25 +2,33 @@ const { Election } = require("../models");
 
 const noModification = async (request, response, next) => {
   try {
+    const election = await Election.findElection({
+      electionId: request.params.id,
+      adminId: request.user.id,
+    });
     if (
-      request.originalUrl == "/home" ||
-      request.originalUrl == `/home/election/${request.params.id}`
+      request.originalUrl == `/home/election/${request.params.id}` ||
+      election.electionStatus == false
     ) {
       next();
-    } else if (request.params.id != undefined) {
-      const election = await Election.findElection({
-        electionId: request.params.id,
-        adminId: request.user.id,
-      });
+    } else {
       if (election.electionStatus == true) {
-        request.flash("error", "Election cannot be edited after launch");
-        response.redirect(`/home/election/${election.id}`);
-      } else if (election.electionStatus == false) {
-        next();
+        if (
+          request.method == "DELETE" ||
+          request.method == "POST" ||
+          request.method == "PUT"
+        ) {
+          request.flash("error", "Election cannot be edited after launch");
+          response.redirect(303, `back`);
+        } else {
+          request.flash(405, "error", "Election cannot be edited after launch");
+          response.redirect(`back`);
+        }
       }
     }
   } catch (error) {
-    response.status(401).json({ error: error.message });
+    request.flash("error", error.message);
+    response.redirect("/home");
   }
 };
 
