@@ -60,4 +60,19 @@ describe("Voting platform test suite", () => {
     res = await agent.get("/home");
     expect(res.statusCode).toBe(200);
   });
+
+  test("Creates a new election at home/election/new", async () => {
+    const agent = request.agent(server);
+    await login(agent, "john.doe@jd.com", "12345");
+    let res = await agent.get("/home/user");
+    const userId = res.body.id;
+    res = await agent.get("/home/election/new");
+    const csrfToken = extractCsrfToken(res);
+    const response = await agent.post("/home/election/new").send({
+      name: "Prime Election",
+      adminId: userId,
+      _csrf: csrfToken,
+    });
+    expect(response.statusCode).toBe(302);
+  });
 });

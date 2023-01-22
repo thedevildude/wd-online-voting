@@ -101,6 +101,11 @@ homeRouter.get("/", async (request, response) => {
   });
 });
 
+// API for getting user details in JSON
+homeRouter.get("/user", async (request, response) => {
+  response.status(200).json(request.user);
+});
+
 // Page for managing user detail
 homeRouter.get("/user/settings", async (request, response) => {
   response.render("userSettings", {
