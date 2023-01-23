@@ -28,10 +28,12 @@
         <p class="text-2xl font-semibold"><%=i+1%>) <%=question[i].name%></p>
         <p class="text-sm mx-7"><%=question[i].description%></p>
         <div class="flex my-5">
+        <%let res;%>
+        <%let res2;%>
         <%for(let j = 0; j<options[i].length; j++) {%>
           <%if(vote_casted){%>
-            <%let res;%>
-            <%if(options[i][j].id === parseInt(objValues[i])) {res2 = options[i][j].option_name}%>
+            <%res = objKeys.findIndex(k => {return parseInt(k) == question[i].id})%>
+            <%if (options[i][j].id == parseInt(objValues[res])) {res2 = options[i][j].option_name}%>
           <%}%>
           <div class="flex items-center ml-5 pl-4 border-gray-300 border-2 w-60">
             <input type="radio" name="<%=question[i].id%>" id="<%=options[i][j].id%>" value="<%=options[i][j].id%>" class="w-5 h-5">
